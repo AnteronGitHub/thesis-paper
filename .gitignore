@@ -1,0 +1,10 @@
+
+.DS_Store
+*.pdf
+*.aux
+*.log
+*.out
+*.toc
+
+*.swp
+
