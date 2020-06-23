@@ -61,6 +61,71 @@
 
 \mainmatter
 
+\chapter{Introduction}
+
+As providing services over the Internet has become a common practice in the
+modern society, maintenance of information systems has encountered many
+challenges as well. While web-based applications have become more diverse,
+resource-intensive, and complicated, they face higher expectations with respect
+to usability, performance and security.
+
+Often times industrial software development has strict deadlines to follow.
+Many development practices are built around the idea of constant service
+improvement. It means that a software product is rarely considered finished but
+instead new features are being added to it and flaws being fixed in a priority
+order.
+
+As a result, programs and sometimes entire system architectures tend to require
+frequent updates. Similarly to IT services automating repetitive tasks in hopes
+of achieving reliability and cost-effectiveness, software development processes
+aim to utilize automation whenever feasible.
+
+Cloud enviroments offer on-demand computing resources for cloud consumers. When
+deploying to cloud, a user can expect customized servers being provisioned
+within seconds. It can be achieved with a combination of hypervisors and
+programs preinstalled in virtual machines for instance. For further
+configurations, additional software automation tools can be used.
+
+Cloud environments are formed by physical host machines that lease virtualized
+devices such as virtual CPUs (vCPU), logical volumes, or virtual network
+devices. Users get typically charged for the time that they use some of these
+resources. Servers can quickly be set up and down, preventing users from
+having to pay for under-utilized servers.
+
+For server provisioning, cloud providers do not typically have the same
+luxuries as cloud users, since using virtualization is not optimal due to added
+processing overhead. However when it comes to configuring hundreds or even
+thousands of physical server computers, automation is once again seen as a
+potential solution. Yet many traditional cloud administrators are still relying
+on manual maintenance operations.
+
+This thesis explores different popular methods for deploying and administering
+cloud environments with help of software automation. Selected automation tools
+and de facto methods for using them are compared. Questions \ref{fig:rqs} are
+reflected during evaluation.
+
+Deployed software is a combination OpenStack services. OpenStack is a
+collective of open-source software projects for running cloud servers.
+OpenStack is the most widely used plaftorm for creating private clouds. It
+includes official repositories for various automated deployment methods. Most
+of the methods provide a basis on which to build a solution customized for own
+working environment.
+
+\begin{figure}[t]
+\centering
+\begin{itemize}
+  \item [RQ1] What are the key factors affecting the design of different
+              deployment methods, and how do they differentiate from each
+              other?
+  \item [RQ2] What kind of features do different deployment methods offer?
+              Which components are used in deployments?
+  \item [RQ3] Who will benefit from the development of software automation
+              tools, and why?
+\end{itemize}
+\caption{Research Questions}
+\label{fig:rqs}
+\end{figure}
+
 \begin{thebibliography}{9}
 
 \end{thebibliography}
