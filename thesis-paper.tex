@@ -126,7 +126,723 @@ working environment.
 \label{fig:rqs}
 \end{figure}
 
+\chapter{State Of The Art}
+
+This thesis is motivated by current trends and contemporary practices used for
+administering IT infrastructures. Cloud computing has reached nearly a de facto
+status for large scale infrastructure provisioning. While cloud services
+automate many administrative tasks, another increasingly utilized method in IT
+service management is the use of software automation for system configurations.
+
+Usually whenever there is a trend or a commonly followed practice in the field
+of computer science, there are various approaches taken to achieve it.
+Different approaches may share similarities in some aspects while at the same
+time they can be fundamentally different in other aspects. One of the reasons
+for the existence of various alternative solutions can be commercial
+competition, another can bedifferent preferences for software architectures.
+
+There is a lot of diversity when it comes to the use of software solutions for
+IT service management. However for the most parts IT services themselves have
+similar requirements related to the quality of service. Services have
+requirements such as highly availability, reliability, efficiency, usability,
+and security. At the same time service management needs to be cost-efficient.
+When it comes to providing high quality with low cost, proper use of automated
+solutions may prove to be valuable.
+
+With successful Internet based services, scale makes a big difference. Spikes
+in the number of active users can affect the quality of service significantly,
+even to the point where the service is unusable. At the same time, having
+under-utilized servers wastes resources and thus increases the cost of
+providing service, resulting in competitive disadvantage in the market. This
+must be considered both in the design of the application software and in the
+infrastructure architecture.
+
+Number of users for a web-based application can change a lot during the course
+of a regular business day. Many services have repeating patterns in their
+level of usage and the number of users for a particular time of day can be
+predicted with high accuracy. If usage level has drastic changes and follows a
+repeating pattern, provisioned computing resources can be scaled correspondinly
+resulting in cost savings for optimized resource utilization. With the help of
+detailed analysis and the use of cloud platforms, this can be achieved.
+
+When scaling infrastructure, many administrative tasks become repetitive. When
+scaling up, deployed applications need to be configured and integrated to
+environment. When scaling down, it has to be ensured that no application is
+requesting removed application instances. When done manually these tasks have a
+high risk of failure due to human error to the point where they cannot be
+expected to be frequently without this adding a lot of costs.
+
+Even when infrastructure is not scaled rapidly, there are repeating
+administrative tasks, such as software updates and hardware maintentance
+operations. Having to assure service operations during maintenance suffers the
+same risk of human error, when relying on manual operations. Still this is a
+practice for many administrators and may even limit the potential of the
+provided IT service.
+
+Cloud computing can be used for provisioning computing resources rapidly. For
+customized applications, additional configuration is often necessary. Software
+configuration management is a potential solution for avoiding human error in
+repetitive configuration tasks as it enables these configurations to be applied
+programmatically. While providing operational reliability, it has additional
+benefits such as fast execution, and documentation value provided formally
+defined configuration tasks.
+
+Another recent trend in IT service management is the DevOps movement. The term
+DevOps is often used to describe a principle of speeding up development by
+simplifying the process of publishing new software versions. By using efficient
+development processes and automated tools, the time it takes to
+deploy a new software version to runtime environment or package distribution
+can be cut, lowering the overall cost of IT development. DevOps movement was
+motivated by agile software development principles and the realization that
+communication between software developers and operators often times ended up
+being an unnecessary bottleneck for project speed.
+
+Some of the goals of DevOps movement, such as fast and automated software
+release process, can be achieved with a proper use of cloud platforms and
+software configuration management tools. They allow application developers to
+define the deployment process either completely or partially. Deployment is
+executed by running applications as opposed to manually following with
+application specific instructions. Use of automation avoids errors resulting
+from miscommunication between developers and operators.
+
+This chapter provides a short introduction to the concepts behind cloud
+computing and software confuration management. Some contemporary software
+solutions for these concepts. Descriptions aim to provide answers to research
+question RQ1 shown on Figure \ref{fig:rqs}. Key design principles and
+differences of the tools are presented as they will affect any deployment
+methods related to them.
+
+\section{Cloud Computing}
+
+For the last decade, cloud computing has been a common paradigm for IT
+infrastructure management. It provides benefits such as high server utilization
+and dynamic scalability with a pay-as-you-go price model for outsourced server
+infrastructure. Cloud computing is being widely used in various industrial
+fields, including telecommunication, retail, finance, and scientific research.
+As a result, there is also an inreasing number of public cloud platforms
+available, most notably Amazon Web Services (AWS) \cite{aws}, Microsoft Azure
+\cite{azure}, and Google Cloud Platform (GCP) \cite{gcp}.
+
+As with many practices in the field of computer science, cloud computing lacks
+a universally agreed formal definition. However common to most of the
+contemporary cloud platforms is the ability for the end user to provision
+computing resources over HTTP interfaces, mostly by using Restful APIs. This
+makes it possible to automate infrastructure provisioning. Cloud consumer
+avoids the need to request infrastructure operations from administrators, while
+administrators don't have to spend time for repetitive tasks related to
+infrastructure provisioning.
+
+Due to its on-demand nature, a term often used to describe cloud resource
+provisioning model is \textit{Infrastructure-as-a-Service} (IaaS). It
+emphasizes the fact that infrastructure can be provisioned through a
+well-defined interface. IaaS can be generalized to term
+\textit{Anything-as-a-Service} (XaaS), where anything stands for any resource
+that is provided through programmable interfaces. Whereas in IaaS, the provided
+resources are relatively low-level computing resources, such as servers,
+networks or volumes, in \textit{Software-as-a-Service} model, in addition to
+service provider provisioning infrastructure, it takes care of software
+licencing and configuration.
+
+Reason for varying service models offered by cloud providers, is the fact that
+clients have varying needs in terms of outsourced software solutions. Some
+clients may want an easily adaptable software configuration with no need for
+additional configurations and expertice related to the software; in case of
+issues with the software they are willing to pay for customer support. At the
+same time there are clients who use cloud providers only for leasing
+infrastructure in order to avoid having to maintain own data centers. For the
+first type of client, SaaS may be the right service model, and the latter might
+prefer IaaS.
+
+When it comes to providing XaaS model services, cloud service providers have
+advantages for making new products. As they know their cloud platform in
+detail, they are able to produce optimized solutions for particular use cases.
+They also have full access to their platform, making it possible to avoid any
+workaround solutions that may arise from having to tailor solutions to
+interfaces provided by other services.
+
+Reasons why some clients may still prefer to configure software being hosted on
+cloud platforms themselves, are saves in costs, and the ability to tailor
+solutions to their particular needs. XaaS products have to be generalized
+enough so that they can be used by a large customer base. The more a product is
+generalized, the less it can be directly adapted to a particular use case.
+There are different approaches to dealing with this dilemma, such as
+configuration options or large catalogs of tailored services.
+
+Another characteristic in cloud environments is seemingly limitless resources
+available on-demand, enabling the infrastructure to be scaled rapidly based on
+current usage. As cloud platforms can be used for various computational tasks,
+investing in large data centers is more reliable for cloud providers than for
+any particular industrial field practicioner.
+
+With more computing resources available, and the ability to provision them for
+an execution of a particular computational task with no extra cost, some cloud
+consumers may use the platform to lease many vCPU hours for a short period of
+time, instead of using less vCPU hours for a longer period of time. This way of
+using cloud platform is more typical with computational applications such as
+with business analytics, and scientific research.
+
+Ability to think of a cloud platform as having limitless computing resources
+makes it possible to consider cloud platforms alternatives for \textit{High
+Performance Computing} (HPC) or \textit{High Throughput Computing} (HTC). In
+general this would be achieved by scaling computations horizontally. If a heavy
+computational task can be split to subtasks that can be run in parallel, they
+can be executed on different hardware, shortening the overall time of
+computation. Similarly, if a large data stream can be split to smaller streams
+to be combined at receiver, the overall time of transmission can be shortened
+by using different network links. MapReduce \cite{mapreduce} is an application
+developed to help parallelize computational tasks by defining them as map and
+reduce fuctions. This model makes it possible to parallelize and thus scale
+computations horizontally by the runtime system.
+
+Although cloud platforms primarily provide scalability horizontally with a
+number of provisioned instances, some of the larger cloud platforms provide
+also instance flavors with highly performant computing hardware. These flavors
+may be provided for bare metal services to reduce computational overhead of
+virtualization. While vertical scaling is not a feature distinct to cloud
+platforms, they benefit from the high user base. This way while the platform
+grows, as more varying computing flavors are being provided, computers with
+high-quality CPUs and GPUs can be aquired in hopes that they will not go
+unutilized.
+
+Cloud environments may be public or private. While public and private cloud
+services do not functionally differ from one another, private cloud services
+are restricted to particular end users and public cloud services are offered
+more or less without restrictions. As a result, generally public cloud
+environments are larger in size, known examples of such environments include
+AWS, Azure and GCP.
+
+Some cloud platforms are built on top of a number of other cloud platforms.
+Such architectures are called \textit{multi clouds}. Multi clouds may use a
+particular cloud provider for certain types of resources, such as virtual
+networks to be able to use quality wide area network infrastructure. They may
+also use other cloud platforms for provisioning resources that they do not have
+available at the moment.
+
+\subsection{OpenStack}
+
+OpenStack \cite{openstack} is the most widely used open-source software for
+building cloud environments. It was originally developed by NASA and Rackspace,
+and published openly in the year 2010. Since then it has been developed by
+various organizations, including Cern nuclear research institute as well as
+individual contributors. It has been battle-proven for a reliable cloud
+operation \cite{forrester}. While OpenStack can be used for public clouds, it
+is most commonly used for private clouds or multi clouds. It is currently being
+also developed to provide support for edge computing infrastructures.
+
+At its core OpenStack is an example of a IaaS platform. It provides
+functionality for infrastructure provisioning through various services.
+Infrastructure provisioning is also the primary use case of OpenStack for most
+of its users. Many of the OpenStack services can be extended for providing
+XaaS, such as VPN-as-a-Service or Database-as-a-Service. Some of these
+extensions can be installed as plugins for the appropriate OpenStack services.
+Otherwise any extensions have to be implemented.
+
+In addition to installing OpenStack with low-level open-source projects,
+OpenStack community has an official marketplace for commercial high-level
+OpenStack-based software products. Commercial OpenStack products may provide
+official integration to other platforms, or simplify and provide support for
+the installation of OpenStack.
+
+OpenStack consists of different services, not all of which are required for an
+operational cloud. OpenStack services may also be used as a part of other
+distributed systems without deploying a full OpenStack cloud. At basic level,
+OpenStack services are Python application servers and related worker agents.
+They use other infrastructure services, such as message queues, databases,
+caches and proxies.
+
+In order to grant access to resources, OpenStack services need to be able to
+authenticate and authorize requestors, which may be end users or other
+services. Amongst OpenStack services, Keystone provides Identity and Access
+Management in cloud. Since OpenStack services use it for access control when
+communicating with other services it is the first service to be installed in
+an OpenStack deployment.
+
+An essential resource in any computing environment is the actual computing
+units. Traditionally OpenStack has provided computing resources by using
+hypervisors, such as ESXI or KVM/QEMU. OpenStack compute service is called
+Nova and it was one of the first services developed. Nova receives requests
+that describe the specifications for needed virtual machines. Nova then
+schedules the creation of the virtual machine from the hypervisor.
+
+In order to access virtual machines created by Nova, network access is
+required. Virtual network devices are used for on-demand network provisioning.
+Originally virtual networks were provided by Nova service, but currenlty there
+is a specific OpenStack service, called Neutron, that is responsible for
+network provisioning. Even though nova-network is considered legacy, older
+OpenStack deployments are still using it as they have not been updated to
+support Neutron. As an example, Cern which has been a long-time OpenStack user,
+is still using nova-network in its deployment.
+
+Virtual machine images used by Nova are provided by Glance. Typically guest
+operating system images are built by cloud administrator by using tools such as
+disk-image-builder. However users are able to create virtual machine images
+from their active Nova server instances.
+
+OpenStack has a few services for persisting guest data. Service providing block
+storage is Cinder. It provides mountable logical volumes for guest instances.
+When instance is terminated, data stored in the volume will persist. Another
+available service for persistent data is Swift object storage. It processes
+stored data using object model. Lastly Manila is an OpenStack service that
+provides shared file system.
+
+There are some OpenStack services that are not required for a functional cloud,
+but are almost always included in cloud deployment. One such service is
+Horizon, a web UI for managing cloud projects. Users can login to it with their
+credentials and do most of the operations available through other OpenStack
+services.
+
+Another optional but commonly deployed OpenStack service is Heat orchestration
+engine. Heat takes a stack template file as an input and creates the resources
+described in the file. This makes instansiating complex cloud stacks quick and
+repeatable. In addition to creation, Heat has functionality for updating
+deployed stacks based on changes made to its template file. Heat provides a
+service similar to that of CloudFormation on AWS and it actually supports its
+syntax. Ability to create system infrastructures with input files that are
+parsed by computer programs is sometimes referred to as
+\textit{Infrastructure-as-a-Code} (IaaC).
+
+OpenStack deployments used for providing cloud services have to be designed
+properly. Quality requirements related to availability, efficiency, security,
+and any potential service level agreements have to be taken into consideration
+when designing a cloud. Since cloud networking is more complicated than regular
+data center networking, decent knowledge of the underlying technologies have to
+be assured for both the designers and the administrators.
+
+OpenStack Deployments typically include host machines of a few different
+flavor. Typically host machines are classified to compute, storage, networking,
+and controller nodes. Each of the node types includes only OpenStack services
+that are used for corresponding functionality. Appropriate hardware based on
+its use purpose should be installed on a node machine. Node  classification may
+be different and miss miss some types or include other types depending on the
+use case of the cloud. Host flavors have an important role when designing a
+cloud architecture as it affects the cloud performance, power consumption and
+overall cost.
+
+Compute nodes are used for housing guest virtual machines. They provide guests
+with CPU cores, RAM, root file system, and network access. The more CPU cores,
+and RAM the node has the more guests it can run simultaneously. It is possible
+to overcommit vCPUs with a defined ratio. Overcommitting increases the capacity
+of CPU cores with a tradeoff efficiency in guests. For a compute node in a
+production deployment having 16 CPU cores would be a feasible amount.
+
+Compute nodes should have available RAM in a proportionally to available cores.
+Guest instances are created from instance flavors that specify their resource
+use. Flavors in the deployed cloud can provide guidelines to the compute node
+hardware specifications.
+
+Guest root volumes may be housed in shared file system in a network or in a
+node, or they may be provided by directly mounting on the compute node file
+system. In case the compute node file system is being mounted directly, compute
+nodes need to have available volume capacity when creating new guest instances.
+While using network volumes for guest root volumes may provide better volume
+utilization, it suffers from slower read and write operations. Other options
+related to volume provisioning is the device technology such as choice between
+tape or SSD storage.
+
+Storage nodes provide data persistence in the cloud. There are various
+alternative backends for distributed storage accross nodes, such as Ceph,
+GlusterFS and NFS. Hardware used for storage nodes should be oriented in volume
+devices.
+
+\subsection{Docker}
+
+Docker \cite{docker} is a software for managing containerized applications.
+Containers provide process isolation by using Linux Kernel cgroup \cite{cgroup}
+functionality. Use of containers simplifies management of multiple
+microservices but adds overhead and security considerations.
+
+Docker containers use Docker Engine to communicate directly with host operating
+system kernel. This makes containers more lightweight than virtual machines run
+by hypervisors since kernel functionality does not have to be emulated by the
+hypervisor.
+
+In addition to providing runtime isolation for application processes, Docker
+includes functionality for creating container images. Images can be created
+from existing containers or based on files describing image configuration
+tasks. Created images can be published to Docker \textit{registries}, which can
+be public or private. DockerHub is a public container registry which houses
+official Docker images, and is also available for other publishers.
+
+Docker's image build system is sophisticated and provides multi-layered caching
+for created images. Image is cached after distinct operations in the creation
+process. By running configurations in the proper order only a subset of them
+have to be repeated when image is modified and re-created. For instance by
+updating base image package manager as the first configuration operation and
+installing application dependencies later, updated package manager can be used
+if application dependencies need to be reinstalled.
+
+Docker also includes functionality for managing resources other than container.
+Docker Engine can provision volumes for persisting data and networks for
+container connectivity. There are different drivers for volumes and networks.
+Simplest drivers simply bind resources directly to Docker host. For scaling
+Dockerized application deployments overlay networks can be created for
+containers so that they can connect to containers running on different hosts by
+using layer 2 semantics.
+
+One of the reasons for Docker becoming popular among software developers is how
+it simplifies container creation and sharing container images. Since container
+are portable to other hosts running Docker Engine, applications can be deployed
+easily, while having any software dependencies included in built images makes
+deployment quicker and more reliable. Lightweight container lifecycle also
+enables containers to be recreated as a method of disaster recovery.
+
+Docker's benefits for application deployment are ideal for teams adapting
+DevOps principles. Not only do image registries provide an interface between
+developer and operator teams, they make development environment configuration
+simple enough to be appealing for application developers. Continuous deployment
+pipelines benefit from Docker's build system.
+
+By installing all the used software into containers, developer can keep the
+host operating system environment uncluttered. Uninstalling software and its
+files is simply done by removing the container.
+
+Similarly to application developers benefitting from uncluttered host system,
+operators running applications in containers do not have to worry about
+cleaning thrash when updating outdated software versions. Containers provide
+logistics for managing software that updates frequently. Running various
+applications on a single host becomes also less complicated with containers.
+
+\subsection{Kubernetes}
+
+Kubernetes \cite{kubernetes} is a software for managing Docker container
+clusters. It was developed by Google which has been running applications in LXC
+containers long before Docker became popular. Kubernetes is intended for
+providing highly available production environments by running Docker container.
+Due to container overlay networks it can be used for both centralized cloud
+platforms, and de-centralised edge infrastructures.
+
+Kubernetes uses Helm package manager to deploy applications from templates
+called charts. While applications can be deployed in a Kubernetes cluster
+without Helm packages, having Helm charts helps to bundle applications.
+
+Kubernetes consists of api server, scheduler, cluster controller and worker
+nodes. Clusters may provision resources from cloud providers by using separate
+cloud controller process. In order to optimize Kubernetes cluster runtime for
+production environments, baremetal Kubernetes clusters may be run. In this case
+cloud controller is not necessary.
+
+Kubernetes uses Docker Engine for managing containers. It can scale application
+deployments by creating and deleting containers, and it provides health
+monitoring and is capable of automatically recreating containers that have
+entered failed state.
+
+Other infrastructure can also be managed by Kubernetes. It manages firewall
+rules within networks, and provides ingress to application containers through
+reverse proxy.
+
+Kubernetes is specifically useful for developers since application stacks can
+be created faster than virtual machines. For administrators Kubernetes provides
+functionality for deploying, updating and scaling applications. As a tradeoff,
+having to install and operate Kubernetes cluster adds overhead to maintaining
+applications.
+
+There are commercial Kubernetes services, that offer configured clusters for
+application developers. This makes it easy to operate scalable web-based
+applications without the need to administer or configure host systems, which is
+favourable for teams consisting only of software developers. On the other hand
+administers may provide hosted Kubernetes clusters as a service.
+
+OpenStack includes a service called Magnum, which can be used for providing
+Kubernetes clusters as a service. Magnum uses Heat orchestration for
+configuring cluster hosts that are created with Fedora Atomic machine images,
+which include preconfigured Kubernetes software. Similarly to other OpenStack
+services further customizations to Magnum are also possible.
+
+In addition to Kubernetes being available to be provisioned as a service, there
+also exists methods to deploy OpenStack services into Kubernetes clusters.
+Since virtualization allows various possible stacks to be built from the same
+components, it may sometimes create confusion. How different stacks are built
+depends on the intended use cases, but for the most parts, the more
+virtualization stack is had, the more overhead is created, and thus it should
+be avoided for production-grade environments.
+
+\section{Software Configuration Management}
+
+Large distributed systems, such as OpenStack deployments, consist of many
+configuration items, such as databases, message queues, proxies, and memory
+caches. Infrastructure services need to be configured according to applications
+using them. As infrastructure services, or the application services, are
+updated, compliancy to other services must also be ensured.
+
+Shell scripting has traditionally been a common way of automating different
+administrative tasks in Linux environment with its counterpart being batch
+scripting in Windows. Recently different software automation tools have become
+a popular replacement for scripting.
+
+Automation tools commontly take an input file that describes operations to be
+executed, and apply it. Input files are often given in declarative format, like
+JSON \cite{json} or YAML \cite{yaml}, as opposed to procedural format of script
+files. The key difference is, that input files describe the desired outcome and
+not the methods of achieving it. How configuration is applied to the targeted
+system is determined by the automation tool implementation. Since the methods
+of configuring the system are for the most part not relevant to administrators,
+using declarative input files simplifies automating software configuration
+management.
+
+Automation tools provide reliability and cross-platform support by using
+application layer modules for software configuration tasks. They can abstract
+operating system dependent considerations for common administrative tasks. This
+also enables configurations to be shared more easily among administrators.
+
+Typical recommendation when designing automated configuration tasks is to aim
+for idempotent operations. This means that the task automated can be repeated
+indefinitely without it changing the outcome. In other words, if the targeted
+system is in the desired state, applying the configuration does not change the
+target system state. Idempotence can be assured at low level by the automation
+tool, but when making high level configurations, it has to be taken into
+account by the configuration designer. Having idempotent configuration tasks
+makes the use of automation tool more reliable.
+
+One crucial difference in the use of software configuration management tools
+and precreated virtual machine or container images, is that configuration
+management tools deal with running configurations, while in created images the
+necessary configurations have already been applied. It is possible to use
+software configuration management tools for creating machine images, but most
+of its usefulness comes from dynamic maintenance operations.
+
+Dynamic configurations provide versatility and the ability to request newest
+package versions over a network during execution. Tradeoff is that the
+configuration takes longer than having preconfigured software available at
+disk. In repeating configuration operations, such as CI/CD pipelines, virtual
+machines containing some of the required software could be useful. Another
+option is to use cache mechanism for installed dependencies. Optimizing build
+time is usually possible in many ways once the pipeline is functional.
+
+There is a large number of different software automation tools available. While
+there are differences in the architecture of different software configuration
+management tools, some similarities exist as well. Most of the software
+configuration management tools provide some mechanism for sharing configuration
+methods. This makes it possible to create communities of administrators.
+Similarly to open-source software projects, configuration tool communities
+often times help to develop the tool as well. As with many software projects,
+many configuration management tools depend on active communities in order to
+keep being developed. Some of the more relevant tools for this thesis are
+introduced below in more detail.
+
+\subsection{Ansible}
+
+Ansible \cite{ansible} is a software management tool developed by RedHat with
+community contributions. Ansible is an open-source program written in Python.
+Ansible can be run with ad-hoc commands, without written input files, but
+generally it is used with YAML formatted files describing operations to be
+executed.
+
+Use of Ansible is based on establishing SSH connection to target machine and
+running Python modules executing administrative tasks. Hence it does not
+require additional  agent programs installed on target machines, in addition to
+SSH daemon and Python, both of which are available in many basic Linux distro
+installations. Not requiring additional software makes the use of Ansible
+simple and keeps target machines optimized.
+
+Architecturally Ansible consists of a few concepts that divide the
+responsibility of configuration execution. At lowest level, tasks are executed
+in \textit{modules}, which are Python scripts that generally use standard
+library API's for interacting with host operating system. For the most part the
+modules need not be written when using Ansible, since Ansible standard library
+includes modules for the most common administrative tasks. One of the standard
+modules enables user to execute arbitrary shell commands, avoiding the need to
+write a module for programs that do not have one implemented.
+
+\begin{figure}[t]
+\centering
+\begin{verbatim}
+---
+- name: Copy files to destination
+  copy:
+    src: "files/{{ item }}"
+    dest: "/opt/{{ item }}"
+  with_items:
+    - file.txt
+    - other_file.txt
+\end{verbatim}
+
+\caption{Example Ansible task definition}
+\label{fig:ansible-task}
+\end{figure}
+
+Ansible input files reference modules through units, called \textit{tasks}.
+At minimal, tasks describe the module to be executed and arguments passed to
+it. Tasks may include additional metadata, such as descriptive names that are
+displayed during execution. Variables can be used with defined tasks in order
+to make them re-usable. For instance, arguments passed to a module could be
+defined with variables.
+
+Figure \ref{fig:ansible-task} illustrates an example of Ansible task, which
+uses \textit{files} module to copy files from \textit{files} directory to the
+\textit{opt} directory on targeted host. It loops through file names specified
+in \textit{with\_items} list, places the file names in the \textit{item}
+placeholder in the task arguments.
+
+Complex software configurations consist of many tasks. In order to structure
+templates, Ansible uses \textit{roles}, that describe higher level
+administrative operations. Roles are grouped in directories that follow a
+conventional structure that Ansible expects. In order to roles to make changes
+to target machines, they must include some tasks. Roles cannot be executed
+directly, but rather have to be referenced externally. They are however
+supposed to be kept self-contained, in order to port them easily. For this
+reason roles can define default variable values to be used in tasks.
+
+Input files that Ansible can execute are called \textit{playbooks}. They
+describe hosts to be targeted, and reference roles to be applied or tasks to be
+executed.
+
+Environment specific information, such as host IP addresses, and customizable
+configuration parameters are described in \textit{inventories}. Inventories can
+be built from groups of hosts, and variable values can be specified for
+individual hosts or for host groups.
+
+While Ansible is easy to get started with, and provides modular a method for
+building configuration libraries, it does not provide high-level in-built
+functionality, such as health monitoring or infrastructure provisioning. These
+tasks can be implemented with Ansible, and shared as roles for instance.
+
+\subsection{Juju}
+
+Juju \cite{juju} is an application modeling tool developed by Canonical. It is
+capable of deploying, configuring and scaling software. Juju was originally
+written it Python, but its current version is implemented with Go programming
+language. It still has an API for Python.
+
+Juju uses a \textit{cloud} abstraction for provisioning infrastructure.
+Out-of-the-box it supports public clouds like AWS, GCP, and Azure, and a number
+of private clouds, including OpenStack. For production deployments, Canonical
+recommends using MAAS \cite{maas}, which can be installed in datacenter for
+provisioning bare metal infrastructure. Juju also supports manual clouds for
+deploying in pre-existing server infrastructure. Manual clouds lack some of the
+functionality available when using other clouds, mainly related to automated
+provisioning.
+
+Juju uses a concept of \textit{application} for managing deployed software. All
+of the components, including infrastructure services needed by deployed
+software are, called applications by Juju. Operations related to applications,
+such as infrastructure provisioning, installation and scaling, are executed by
+Juju by running software packages, called \textit{charms}. Execution of charms
+is triggered by administrator running commands on Juju client.
+
+When deploying applications, Juju creates a special management node called
+\textit{controller}. Controller maintains a database including data used by
+\textit{models}. Models manage environment specific information of deployed
+components, such as applications, storage volumes and network spaces. Hence
+models provide an interface between application model, and its implementation
+in cloud being used. Models additionally control access to infrastructure.
+
+Juju is especially useful for application developers as it provides a simple
+set of commands for operating application deployment and supports many of the
+common infrastructure providers. Configuration tasks are implemented with
+software modules using software libraries, making it more approachable for
+developers familiar with the tools.
+
+Administrators might find tools that provide declarative input format more
+approachable. In case all of the configurations are provided by application
+developers, Juju could provide an interface between developers and
+administrators.
+
+\subsection{Puppet}
+
+Puppet \cite{puppet} is a Ruby based configuration management tool. Similarly
+to other presented tools, configuration tasks are grouped in modules. Puppet
+has open-source and commercial versions. Commercial version, called Puppet
+Enterprise (PE), simplifies large-scale configuration management by providing
+grahical user interface.
+
+Puppet runs \textit{agent processes} on target machines to keep them in desired
+state. Desired state can be described with Puppet's \textit{Domain Specific
+Language (DSL)}, which is a declarative coding language. Puppet deployment
+includes a \textit{master server}, which stores desired states in database
+called \textit{PuppetDB}. Agent processes translate Puppet DSL into executable
+commands. Master and agents use HTTPS protocol for communication \cite{puppet}.
+
+Information about target hosts is gathered by agent processes with Puppets
+inventory tool, \textit{Facter}. Gathered data is sent to master server in
+Puppet DSL format in files called \textit{manifests}. Based on received
+manifests, master server compiles JSON files, called \textit{catalogs} that
+describe the desired state to agent processes. Puppet separates configuration
+data from the code executing configurations by using tool called
+\textit{Hiera}. Separating code from data makes modules more testable
+\cite{puppet}.
+
+Puppet provides accurate configuration monitoring by using agent processes on
+target hosts. At the same time it includes many configuration items making the
+installation process more complex. Overhead of configuration tool has a
+potential of vendor-lock and means that the tools must provide value worth the
+added work.
+
 \begin{thebibliography}{9}
+
+\bibitem{aws}
+Amazon Web Services (AWS), [Online]. \\
+Available: \textit{https://aws.amazon.com/}
+
+\bibitem{azure}
+Microsoft Azure, [Online]. \\
+Available: \textit{https://azure.microsoft.com/}
+
+\bibitem{gcp}
+Google Cloud Platform, [Online]. \\
+Available \textit{https://cloud.google.com/}
+
+\bibitem{mapreduce}
+J. Dean et al:
+\\\href{https://dl.acm.org/doi/abs/10.1145/1327452.1327492}
+{MapReduce: simplified data processing on large clusters},
+Communications of ACM, Jan. 2008
+
+\bibitem{openstack}
+O. Sefraoui et al:
+\\\href{https://pdfs.semanticscholar.org/4be2/28917846a218ba00d30b42d709a11b7a5311.pdf}
+{OpenStack: Toward an Open-Source Solution for Cloud Computing},
+International Journal of Computer Applications, vol. 55, no. 3, pp. 81-84, Oct.
+2012
+
+\bibitem{forrester}
+Paul Miller, Lauren E. Nelson:
+\\\href{https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/www-assets-prod/pdf-downloads/Brief-OpenStack-Is-Now-Ready.pdf}{Brief: OpenStack Is Now Ready For Business}
+
+\bibitem{cgroup}
+Linux Manuals: CGroups, [Online]. \\
+Available: \textit{https://man7.org/linux/man-pages/man7/cgroups.7.html}
+
+\bibitem{docker}
+D. Bernstein:
+\\\href{https://ieeexplore.ieee.org/abstract/document/7036275}{Containers and
+Cloud: From LXC to Docker to Kubernetes},
+IEEE Cloud Computing, vol. 1, no. 3, pp. 81-84, Sept. 2014
+
+\bibitem{kubernetes}
+B Burns et al:
+\\\href{https://dl.acm.org/doi/pdf/10.1145/2898442.2898444}{Borg, Omega, and
+Kubernetes},
+Queue, 2016
+
+\bibitem{json}
+JSON, [Online]. \\
+Available: \textit{https://www.json.org/}
+
+\bibitem{yaml}
+YAML, [Online]. \\
+Available: \textit{https://yaml.org/}
+
+\bibitem{ansible}
+N Singh et al:
+\\\href{https://ieeexplore.ieee.org/abstract/document/7375087}{Automated
+provisioning of application in IAAS cloud using Ansible configuration management},
+International Conference on Next Generation Computing Technologies (NGCT)
+Dehradun, 2015
+
+\bibitem{juju}
+Juju Charms, [Online]. \\
+Available: \textit{https://jujucharms.com/}
+
+\bibitem{maas}
+A Sirbu et al:
+\\\href{https://dl.acm.org/doi/abs/10.1145/2747470.2747473}{MaaS advanced
+provisioning and reservation system},
+In Proceedings of the 1st International Workshop on Automated Incident
+Management in Cloud. Association for Computing Machinery, New York, 2015
+
+\bibitem{puppet}
+Puppet, [Online]. \\
+Available: \textit{https://github.com/puppetlabs/puppet/}
 
 \end{thebibliography}
 
