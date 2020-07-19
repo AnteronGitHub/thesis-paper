@@ -767,6 +767,376 @@ installation process more complex. Overhead of configuration tool has a
 potential of vendor-lock and means that the tools must provide value worth the
 added work.
 
+\chapter{OpenStack Deployment}\label{deployment}
+
+Installation of a functional OpenStack cloud includes many steps. Most of the
+OpenStack services use infrastructure services, that will need to be installed,
+and configured for OpenStack services by managing appropriate resources and
+user permissions.
+
+As new versions of OpenStack services are release biannually, configuration
+management is a big part operating an OpenStack cloud. After initial deployment
+services will need to be upgraded, while ensuring cloud operation. In practice
+the initial deployment covers only a small fraction of the OpenStack cloud
+lifecycle. Often times however the tools used for initial deployment are also
+used for many of the administrative tasks during cloud operation.
+
+For the most part, OpenStack is beneficial for large-scale deployments. Many of
+the infrastructure services aim to provide scalability for OpenStack services.
+Using them for small-scale deployments is not beneficial as they consume
+computing resources on hosts. Small scale data centers do not benefit from
+RESTful APIs for infrastructure provisioning as much either.
+
+Largest OpenStack deployments consist of thousands of nodes in datacenter. In
+the year 2015 Cern reported 5500 nodes being used across two datacenters,
+running more than 12000 virtual machines \cite{cern}. World's largest
+telecommunication company China mobile has published multiple scalability tests
+with OpenStack clusters of 1000 and more nodes \cite{china-mobile}. One of the
+world's largest retail companies, Walmart invested in an OpenStack cloud
+consisting of more than 100000 CPU cores \cite{walmart}.
+
+Various approaches has been taken to cloud administration and update process by
+different organizations. Cern for instance has traditionally followed a model
+where one item is upgraded roughly every two weeks \cite{cern}, minimizing the
+impact of potential failures.
+
+Different parts of installation process has been automated as much as possible.
+OpenStack services may be installed with package management tools, such as pip
+for python source installation. Many Linux distributions' package management
+tools, such as apt for Ubuntu and yum for CentOS, have distributions of many
+OpenStack services as well, altough depending on the used repository,
+distribution packages might not be at the latest versions.
+
+Software configuration management tools have also been used by OpenStack
+community for some time now. Many of the deployment methods for automation
+tools have official OpenStack repositories. Some deployment methods are also
+designed for particular use cases, such as easy setup of development
+environment or automation testing.
+
+\section{Deployment Methods}
+
+OpenStack includes official repositories for many of the popular software
+configuration management tools and some methods developed by the OpenStack
+community. Methods have been developed at different times and for the most part
+they have followed the best practices of the underlying configuration tool
+whenever one is used.
+
+Many deployment methods may have been developed with a particular use case in
+mind. Some methods provide simple setup for an OpenStack development
+environment, while others provide full configurability with minimal assumptions
+of the deployment environment.
+
+Currently many new developers being introduced to OpenStack start with
+automated installation of the services. Being able to install OpenStack
+proof-of-concept easily without knowledge of the automation tool makes
+introduction to OpenStack easier thus increasing the potential size of the
+developer community. OpenStack as many other open-source software projects is
+partly developed by community contributions, so the ease of adaptation does
+indirectly benefit the software development.
+
+Simple setups for development environments are drastically easier to implement
+than for production environments. Only practical requirement in development
+environments is that the developed software is run and can be modified. Having
+all of the applications deployed to the same host machine is most often
+sufficient. This makes it possible to make accurate assumptions of the
+deployment environment, and avoid manual cofigurations. Additionally there
+exists a number of popular tools for development environments, such as Docker
+or Vagrant. Setting up a development deployment can this way be reduced to
+running a single command.
+
+When comparing different deployment methods, this thesis focuses on production
+environments. This means that the deployment should be configurable for the
+needs of Service Level Agreements. Requirements for such environments may
+include high availability, near-zero downtime, responsiveness, security, and
+most importantly it has to be horizontally scalable.
+
+Production-grade OpenStack clouds should first be designed based on their use
+purposes without considering the use of automation. As OpenStack is a complex
+set of services it can be used for various computing environments. Some clouds
+focus on computational power, other maybe high network throughput or storage
+volume. Once the architecture of the cloud is designed, any potential
+automation tool should be decided based on how well they can be used for the
+intended architecture. Cloud operators should also feel confortable with the
+tool of choice as it will likely be used in many parts of the lifecycle of the
+cloud.
+
+In practice, when choosing an automation tool to be used for operating the
+cloud, one important consideration is, how easy it is to find operators capable
+of using the tool. This can be the most important factor for project managers,
+as even the most optimal tool is not practical if there are no operators for
+it. Many automation tools have evangelists that represent companies and make
+the decision of the automation tool less of a technical consideration and more
+of a business decision. An organization might end up selecting the tool that is
+developed by a company whose other products are already in use. Often times
+products developed by the same company have better support for
+interoperability.
+
+Even though using a family of software products from the same vendor has its
+benefits, it can cause an architectural vendor-lock. In case one of the
+products gets discontinued, replacing it with other solutions can become
+difficult if other software solutions are already dependent of it. If the
+product provider company gets aquired or goes down altogether, it may have a
+significant effect on other organizations relying on their products or support.
+One way to avoid vendor-lock is to use software products from various
+organizations. This requires more effort and expertise than relying on the same
+vendor. Alternatively similar products from various vendors can be used
+simultaneously. This approach is likely cumbersome and potentially expensive.
+
+Since OpenStack is supported by many organizations, there is a lot of different
+alternatives for automation methods. Some of the methods are developed by
+open-source communities, some by commercial organization. Some of the method
+can be combined, or even have an official OpenStack project for compound
+deployment method.
+
+Some deployment methods suitable for OpenStack production environments are
+introduced next. Methods will be approached from the perspective of the
+research questions shown on Figure \ref{fig:rqs}. Dependencies for deployment
+methods are displayed on Table \ref{tab:dependencies}.
+
+Since all of the deployment methods listed below are open-source projects, they
+can theoretically be modified for any configuration needs. However in order to
+keep their comparisons reasonable, all of the required features should be
+achieved with configuration instead of changes to the methods. In practice this
+is not likely the case as deployment methods will likely be forked and modified
+for custom needs. OpenStack community encourages merging any modifications to
+the upstream project and avoiding the use of long-term forks. This unifies
+practices in the OpenStack community and helps to develop the deployment
+methods.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{ l }
+\begin{tabular} {r | c c c } \\
+              & TripleO     & OS Helm     & OS Ansible  \\
+\hline
+Provisioning  & OpenStack   & Kubernetes  & Bare metal  \\
+Configuration & Puppet+Heat & Helm        & Ansible     \\
+Runtime       & Nova/Ironic & Docker      & LXC/Bare    \\
+\end{tabular} \\
+\begin{tabular} {r | c c c } \\
+              & Kolla Ansible & OS Charms   & OS Puppet \\
+\hline
+Provisioning  & Docker        & MAAS/Cloud  & Bare metal\\
+Configuration & Ansible       & Juju        & Puppet    \\
+Runtime       & Docker        & LXC/Bare    & Bare      \\
+\end{tabular}
+\end{tabular}
+\caption{Deployment Method Dependencies}
+\label{tab:dependencies}
+\end{table}
+
+\subsection{TripleO}
+
+TripleO \cite{tripleo} is a method for deploying OpenStack by using another
+OpenStack cloud for infrastructure provisioning and configuration. OpenStack
+instance that is used for deployment by cloud administrators is called
+'undercloud', and the instance being deployed for the end-users is called
+'overcloud'.
+
+Even though TripleO is largely based on OpenStack itself and no other software
+configuration tools is needed, it has a steap learning curve due to the
+complexity of resulting in two OpenStack deployments. On the other hand,
+TripleO method benefits from prior knowledge of OpenStack, and it provides more
+experience in using OpenStack services while designing and deploying overcloud.
+
+After first installing OpenStack either manually or by using some of the other
+automated deployment methods, TripleO can be used to deploy another OpenStack
+instance by using OpenStack services to provision server machines. For a
+performant deployment, Ironic Baremetal service is recommended instead of Nova.
+This way the runtime environment of the overcloud is not using a virtual
+machine.
+
+TripleO uses Heat orchestration service to deploy overcloud as a stack. After
+initial deployment Heat can be used to update overcloud by adding or removing
+nodes, provided that undercloud has appropriate resources available. Nodes are
+provisioned with Nova compute service with assistance of Ironic. Glance is used
+for node machine images and Neutron for network provisioning.
+
+Before deploying overcloud, undercloud must be prepared. In addition to
+installing used OpenStack services, there are some preparation tasks for the
+undercloud. Images used by the overcloud nodes must be added to Glance. When
+using Ironic for baremetal provisioning, available nodes have to be registered
+to the service. In a production-grade overcloud deployment, machine flavors
+must also match hardware on target nodes.
+
+Overcloud nodes are split into \textit{roles} that specify used image, flavor,
+number of nodes with role, and Heat templates used for node configuration. In
+addition to number of nodes with different roles, deployer can customize
+overcloud OpenStack service configurations, network configuration and Ceph
+storage cluster configuration. Otherwise TripleO deployment specifies much of
+the overcloud features, as deployment is executed by OpenStack services running
+on the undercloud.
+
+\subsection{OpenStack Helm}
+
+OpenStack Helm \cite{openstack-helm} is a collection of Helm Charts for
+deploying OpenStack services into an existing Kubernetes cluster. Kubernetes
+includes functionality for deploying, scaling, and upgrading OpenStack services
+running in Docker containers while Helm charts describe components to
+Kubernetes. Tradeoff with OpenStack Helm is the level of overhead for managing
+a Kubernetes cluster for running Docker containers. This adds a potential for
+ossifying Kubernetes into OpenStack environment.
+
+Runtime environment, when using OpenStack Helms, depends on the Kubernetes
+deployment. Kubernetes can be hosted by another cloud, but for production
+environments, baremetal installation of Kubernetes is recommended. For setting
+up a production-grade Kubernetes installation for OpenStack Helm, tools such as
+Kubeadm or Airship \cite{airship} are recommended. However confguration of the
+Kubernetes cluster is outside the scope of OpenStack Helm project
+\cite{openstack-helm}.
+
+OpenStack Helm includes Helm charts for deploying OpenStack services and the
+needed infrastructure services. In order to customize service configurations,
+these charts will have to be modified to suit deployment needs. Especially in
+production use, charts will likely need to be modified \cite{openstack-helm}.
+Doing so requires knowledge of both Helm and configured OpenStack services.
+
+Since Kubernetes platform includes many configuration items and provides
+RESTful API for users, there are questions from architectural point of view,
+about the need to operate OpenStack cloud in Kubernetes. For operators familiar
+with Kubernetes who want to provide OpenStack services, OpenStack Helm could be
+an appropriate deployment method.
+
+Kubernetes in general makes it easy to deploy changes in applications. It has a
+number of available methods for application updates, such as rolling updates
+and canary deployments. Many of these methods are beneficial for applications
+that change rapidly while being actively used. OpenStack services need to be
+updated twice a year at most, and in general they do not require zero-downtime,
+as infrastructure provisioning for the most part can wait for hours as long as
+the existing resources stay functional.
+
+\subsection{OpenStack Ansible}
+
+OpenStack Ansible \cite{openstack-ansible} uses Ansible roles created by
+OpenStack community for deploying OpenStack. It is a low level deployment
+method and requires good understanding of target environment and Ansible.
+OpenStack Ansible was largely developed by Rackspace in the year 2014, but has
+received community contributions later as well.
+
+OpenStack Ansible does not include high level server provisioning as it is
+intended to be used for pre-existing server infrastructure. This especially
+makes adaptation of the method difficult as the infrastructure has to be
+provided separately.
+
+OpenStack Ansible repository includes an all-in-one deployment method for a
+proof-of-concept installation on a single host. This method is not intended for
+production as any further adjustments, such as horizontable scaling would
+require drastic changes to the infrastructure.
+
+As opposed to running services in Docker containers, like with OpenStack Helm
+or Kolla Ansible, services can be installed into Linux containers
+\cite{linuxcontainers}. Some OpenStack service processes, however are run as
+native SystemD services for performance optimization.
+
+OpenStack Ansible configuration enables deployed applications to be split to a
+number of different node groups. This model supports various different
+OpenStack architectures but determines some of the applications that will be
+running on the same nodes. For the most part the divisions are sensible for
+instance having infrastructure services in the same node group.
+
+OpenStack Ansible is a relatively old deployment method, but it has had a
+consistent user base.
+
+\subsection{Kolla Ansible}
+
+Kolla Ansible \cite{kolla-ansible} method uses Ansible to deploy OpenStack
+services into Docker containers built with Kolla \cite{kolla}. Kolla is an
+official OpenStack project for building production-ready Docker containers for
+OpenStack services. Even though Kolla project is not dependent of Ansible,
+Kolla Ansible is the primary deployment method used for containers built with
+Kolla.
+
+OpenStack services will be deployed in Docker containers without orchestration
+tool such as Kubernetes. While avoiding the need to maintain a Kubernetes
+cluster, managing Docker containers manually results in more low-level
+administrative tasks related to scaling and updating the deployment.
+
+Kolla Ansible is a popular deployment method for developers getting introduced
+to OpenStack as it provides a simple all-in-one setup for OpenStack. For
+developers already familiar with Docker, Kolla Ansible is relatively easy to
+get into.
+
+Another benefit of using Kolla Ansible project as opposed to deploying
+OpenStack with Ansible to LXC containers, is to leverage the functionality of
+Docker Engine for virtual resource provisioning. Docker provides simple
+commands for provisioning networks and volumes in a host-agnostic way. With
+native virtualization tools, device provisioning is typically done by different
+programs, such as LVM for volumes and bridgeutils for virtual network
+interfaces.
+
+With a low-level containerization tool such as LXC, virtual networks for
+containers have to be created manually. This includes creating veth pairs, and
+bridging appropriate interfaces to wanted physical network interfaces. These
+operations typically require an operator who is capable with networking. For
+this reason, Docker provides simple commands for setting up virtual networks,
+and a variety of different network types. Even overlay networks accross
+multiple host operating systems can be setup with Docker.
+
+In addition to provisioning virtual devices, docker provides other commands for
+operating on them in a simple fashion. Devices are easy to attach or detach
+from containers. Simplicity of use and reliability of operations is one of the
+reasons for Docker popularity.
+
+According to user-surveys container-based deployment methods have recenlty
+become popular among OpenStack community. This follows the trend of containers
+becoming generally popular in software development and administration. Having
+container based method for environment setup will likely bring more potential
+developers to OpenStack community.
+
+\subsection{OpenStack Charms}
+
+OpenStack Charms \cite{charm-deployment-guide} method uses Juju for deployment
+of OpenStack. Due to OpenStack Charms deployment method being largely
+maintained by Canonical, it has a relatively large support from Canonical but
+at the same time it has a potential for vendor-lock. OpenStack Charms only
+supports Ubuntu target hosts. On the other hand, according to OpenStack user
+surveys, Ubuntu is the most commonly used host distro in OpenStack deployments.
+Likewise Juju is a popular method for both developers getting introduced to
+OpenStack and OpenStack administrators.
+
+OpenStack Charms is a versatile deployment method that is applicable for both
+OpenStack development and production use. It supports a variety of existing
+cloud providers. Once developer or operator is familiar Juju, it can be used
+for easy setup of a number of other services as well.
+
+Canonical recommends MAAS to be used for datacenter provisioning in a
+production OpenStack deployment. A large part of the Juju functionality comes
+from cloud controllers, manual provisioning is not recommended even though it
+is supported with Juju as well. MAAS provides lightweight baremetal server
+provisioning has a good support for use with Juju.
+
+OpenStack Charms is a deployment method that includes a lot of software
+developed by Canonical. It is a good example of a set of software solutions
+from a single vendor that provide a good support for each other. Canonical also
+provides consulting and exerice for custom OpenStack cloud builds.  OpenStack
+marketplace includes also tailored OpenStack software solutions with decent
+support. One reason for using Canonical's support for building OpenStack cloud
+with OpenStack Charms could be to get an open-source installation of OpenStack
+on-premises and get mentoring for data center administrators in the process.
+
+From a techincal perspective one of the reasons why developers may like Juju
+and as a result OpenStack Charms deployment method, is the fact that the
+configuration operations are defined with application modules. Even though many
+of the configuration management tools and OpenStack deployment methods use
+application modules for low-level tasks, they often times are configured in a
+declarative language such as YAML. While this makes configurations
+understandable at high level, the concrete configuration tasks are hidden in
+the application modules that often times are included in separate source
+repositories.
+
+\subsection{Puppet OpenStack}
+
+Puppet OpenStack project houses Puppet \cite{puppet-deployment-guide} modules
+for deploying OpenStack services. Additionally it includes scipts to setup
+deployments including an all-in-one proof of concept setup. In order to use
+Puppet OpenStack, Puppet needs to be installed in data center.
+
+Puppet OpenStack is largely used for developmnt environment setups, and for
+automated testing of OpenStack services. Additionally it can be used for
+large-scale deployments of OpenStack. Puppet OpenStack consists of Puppet
+modules for each of the OpenStack components. Each of the modules has its own
+source repository.
+
 \begin{thebibliography}{9}
 
 \bibitem{aws}
@@ -843,6 +1213,56 @@ Management in Cloud. Association for Computing Machinery, New York, 2015
 \bibitem{puppet}
 Puppet, [Online]. \\
 Available: \textit{https://github.com/puppetlabs/puppet/}
+
+\bibitem{cern}
+T Bell et al:
+\\\href{https://iopscience.iop.org/article/10.1088/1742-6596/664/2/022003/pdf}{
+Scaling the CERN OpenStack cloud},
+J. Phys.: Conf. Ser. 664 022003, 2015
+
+\bibitem{china-mobile}
+Yingching Cheng, Malini Bhandaru, Junwei Liu:
+\\\href{https://01.org/sites/default/files/performance_analysis_and_tuning_in_china_mobiles_openstack_production_cloud_2.pdf}{Analysing and Tuning China Mobile's OpenStack Production Cloud}
+
+\bibitem{walmart}
+Ali Kanso, Nicolas Deixionne, Abdelouahed Gherbi, Feredoun Farrahi Moghaddam:
+\\\href{https://ieeexplore.ieee.org/abstract/document/7911874}{Enhancing OpenStack Fault Tolerance for Provisioning Computing Environments}
+
+\bibitem{tripleo}
+TripleO, [Online]. \\
+Available: \textit{https://docs.openstack.org/tripleo-docs/latest/}
+
+\bibitem{openstack-helm}
+OpenStack Helm, [Online]. \\
+Available: \textit{https://docs.openstack.org/openstack-helm/latest/}
+
+\bibitem{airship}
+Airship, [Online]. \\
+Available: \textit{https://www.airshipit.org/}
+
+\bibitem{openstack-ansible}
+OpenStack Ansible, [Online]. \\
+Available: \textit{https://opendev.org/openstack/openstack-ansible/}
+
+\bibitem{linuxcontainers}
+Linux Containers, [Online]. \\
+Available: \textit{https://linuxcontainers.org/}
+
+\bibitem{kolla-ansible}
+Kolla Ansible, [Online]. \\
+Available: \textit{https://opendev.org/openstack/kolla-ansible/}
+
+\bibitem{kolla}
+Kolla, [Online]. \\
+Available: \textit{https://opendev.org/openstack/kolla/}
+
+\bibitem{charm-deployment-guide}
+OpenStack Charms Deployment Guilde, [Online]. \\
+Available: \textit{https://opendev.org/openstack/charm-deployment-guide/}
+
+\bibitem{puppet-deployment-guide}
+OpenStack Puppet Deployment Guilde, [Online]. \\
+Available: \textit{https://docs.openstack.org/puppet-openstack-guide/latest/}
 
 \end{thebibliography}
 
