@@ -10,6 +10,11 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 
+\usepackage{pgf-pie}
+\usepackage{pgfplots}
+
+\pgfplotsset{width=9cm,compat=1.8}
+
 \newcommand{\pluseq}{\mathrel{+}=}
 
 \title{Automated Software Configuration for Cloud Deployment}
@@ -1137,6 +1142,485 @@ large-scale deployments of OpenStack. Puppet OpenStack consists of Puppet
 modules for each of the OpenStack components. Each of the modules has its own
 source repository.
 
+\chapter{Questionnaire}
+
+A small scale questionnaire was conducted for OpenStack administrators.
+Questionnaire explored the methods being used, and different aspects of using
+automation from administrator's point of view. Questionnaire was conducted as
+an online form that was linked to respondents.
+
+Questionnaire is complementary to OpenStack community user surveys, and it
+provides data to answer research questions of this paper in particular.
+Comparing results from the questionnaire to the OpenStack user surveys when
+appropriate provides means of verifying some of the responses. In addition the
+questionnaire focuses to a particular area of OpenStack administration,
+software automation.
+
+While questionnaire was formed with a particular respondent set in mind, it is
+universal enough to be used for any set of respondents as long as they have
+experience of using automation for administering OpenStack deployments. As such
+it could be sent to a larger set of respondents than what was used in this
+paper.
+
+Only one of the research questions shown on Figure \ref{fig:rqs} that cannot be
+directly answered with documentation, reference papers, or practical testing
+only, is RQ3 about the benefits of software automation. This is largely due to
+the subjective nature of benefits in general. Any measures provided for
+evaluating benefits are easily complex, ambiguous or incomplete and could be a
+topic for research in other fields such as data analysis. While interview
+research can be questioned for many of the same reasons, combining it to other
+forms of research can reinforce results and hypothesis aquired from other
+methods.
+
+\section{Goals}
+
+\begin{figure}[t]
+\centering
+\begin{enumerate}
+  \itemsep0em
+  \item Which automation tool / method are you using at the moment?
+  \item Which year did you start using the aforementioned tool?
+  \item Have you used other automation tools for OpenStack production
+        environments?
+  \item Which Linux distribution do you use for hosts?
+  \item Have you used the underlying tool of your OpenStack automation (E.g.
+        Ansible, Puppet, Chef) for other software deployments / configurations?
+\end{enumerate}
+\caption{Questions about the use of automation}
+\label{fig:questionnaire-tool-details}
+\end{figure}
+
+\begin{figure}[t]
+\begin{enumerate}
+  \itemsep0em
+  \item How easy do you find deployment of OpenStack with your currently used
+        tool?
+  \item How easy do you find administering OpenStack with your currently used
+        tool?
+  \item How easy do you find upgrading OpenStack with your currently used tool?
+  \item How reliable do you find deployment of OpenStack with your currently
+        used tool?
+  \item How reliable do you find administering OpenStack with your currently
+        used tool?
+  \item How reliable do you find upgrading OpenStack with your currently used
+        tool?
+  \item How well does your currently used tool meet your requirements?
+  \item Feel free to point out other aspects related to automating OpenStack,
+        that may not have been covered in this questionnaire. (optional free
+        text)
+\end{enumerate}
+\caption{Automation tool grading}
+\label{fig:questionnaire-grading}
+\end{figure}
+
+Questionnaire started with some questions about the background of the
+respondents, such as professional experience, employer organization. As the
+expected group of respondents was small, more qualitative information regarding
+the background could be used. At the same time the questions related to the use
+of automation were formed in a way that they could be used in a larger scale.
+
+Country where the respondents' branch office is located was asked as well.
+There may be regional differences when comparing OpenStack or any IT
+infrastructure design choices and software stacks. Although national
+differences may be relatively small for countries close to one another,
+continental differences may be more significant.
+
+One of the background questions asked the respondent to choose one or more
+roles seen as the most relevant for her. Even though some of the questions
+about the use of automation may be the most relevant for administrators, it is
+possible for people to have a number of responsibilities simultaneously.
+
+Especially when it comes to selecting software tools for a project,
+administrators may provide recommendations, but generally the choice needs to
+be approved by project manager. Technical advise received from experts has
+often a big impact on the decision. Other potential influencers may be vendors
+of other software that is in use in the organization. It is possible for an
+organization to drive itself into a vendor-lock which may determine the
+automation methods for OpenStack deployment. However finding out such
+situations is outside of the scope of this questionnaire, partly because it may
+be considered a subject to non-disclosure in some organizations.
+
+Potential value of the questionnaire as an approach to answering the research
+questions shown on Figure \ref{fig:rqs} is to gain insight from administrators
+with experience in using some automated solutions for operating OpenStack. As
+RQ1 and RQ2 can for the most part be answered by referencing documentation,
+benefits of the use of automation are best described by people with experience
+of operating a cloud on a daily basis. After all, automation tools have a big
+impact on administrators' work. Ideally the tools being used support the work
+of operating a service in some way.
+
+Questions about the details of automation with OpenStack administration are
+displayed on figure \ref{fig:questionnaire-tool-details}. One purpose of the
+questions was to find out methods being used. Since the development of
+different deployment methods is a subject to current trends in the industry,
+year of adaptation was asked as well; since OpenStack source code was published
+in the year 2011, its unlikely that any tool would be adapted before that.
+
+Linux distribution used for target hosts was asked as well. Some deployment
+methods support only certain distros, and according to OpenStack community user
+surveys \cite{openstack-user-survey-2018} Ubuntu is the most popular Linux
+distribution used by the OpenStack community. There can potentially be a
+relation between the node operating system distribution and the selected
+deployment method. Some of the methods support only certain Linux
+distributions.
+
+Respondents were asked whether they have used the automation tool with other
+software configurations. That may provide some indirect insight to research
+question RQ1 in figure \ref{fig:rqs} about the factors affecting the deployment
+method design. While some deployment methods are only applicable for OpenStack,
+others are based on tools that are so widely used that they may have had an
+influence on the decision of the deployment method. On the other hand in some
+cases the automation tools may be introduced for the administrator with
+OpenStack deployment, and afterwards it will used for other software
+configurations as well.
+
+Respondents were given a scale from one to five to grade different aspects of
+their primarily used deployment method. Lowest meant that the description in
+question does not match experiences with the used tool and highest grade meant
+that it does. Questions for grading are displayed on Figure
+\ref{fig:questionnaire-grading}. Questions essentially cover three aspects of
+the used method: ease of use, reliability, and completeness. First two aspects
+were approached from three different lifecycle operations: deployment,
+administration, and upgrading.
+
+While previous experience with the automation tool certainly affects all of the
+aspects asked, trends in overall gradings may provide some insight into
+benefits of automated software management in general. Some tools may be more
+suitable for different lifecycle operations, but for a more granular analysis,
+large dataset would be required.
+
+Questionnaire focused on experiences in using automated solutions for
+administering OpenStack. While this is sufficient for gaining basic knowledge
+about tools being used, and how the tools are seen, there are certain aspects
+that were left outside of the scope of the questionnaire, but may be crucial
+for designing custom cloud platform. Since scalability is often a requirement
+for a successful cloud platform, deployment methods have to be able to scale
+along with the deployment environment without adding complexity.
+
+Another aspect of deployment that was not covered in questionnaire is the
+specific use purpose of the deployment. Since OpenStack clouds may be used for
+different purposes, some of which focus on computing, others high throughput,
+architectures of OpenStack deployment may vary. Variance of architectures
+reflects to deployment and make some deployment methods more suitable for a
+specific use purpose.
+
+Since answering to the questionnaire was voluntary and the focus of the
+questions is in automation tools, there is some potential for bias in
+responses. People who are insecure about the deployment method of their choice
+might retain from answering questionnaire, providing a limited view in
+responses. This is a concern in any questionnaires that can be read before
+committing to provide response.
+
+With all the potential sources of inaccuracy, when interpreted correcly the
+questionnaire can provide more understanding on the general usefulness of the
+use of automation in OpenStack deployments. Especially with small answer
+datasets a lot of the responses have to be combined to form a bigger picture.
+Any interpretations of the results should have some similarities to those of
+OpenStack user surveys.
+
+\section{Results}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar stacked,
+	bar width=15pt,
+    ymin=0,
+    ytick={1,2,3},
+    legend style={
+      cells={align=left},
+      at={(0.5,-0.20)},
+      anchor=north,legend columns=2
+    },
+    ylabel={Users},
+    symbolic x coords={
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019},
+    xtick=data,
+    x tick label style={rotate=45,anchor=east},
+    ]
+% Puppet-OS
+\addplot+[ybar,pink] plot coordinates {
+  (2014,1)
+  (2015,0)
+  (2016,0)
+  (2017,0)
+  (2018,0)
+  (2019,0)
+};
+% OS-Ansible
+\addplot+[ybar,red] plot coordinates {
+  (2014,0)
+  (2015,1)
+  (2016,0)
+  (2017,0)
+  (2018,.5)
+  (2019,1)
+};
+% Other solutions
+\addplot+[ybar,gray] plot coordinates {
+  (2014,0)
+  (2015,1)
+  (2016,0)
+  (2017,0)
+  (2018,0)
+  (2019,0)
+};
+% OS-Helm
+\addplot+[ybar,blue] plot coordinates {
+  (2014,0)
+  (2015,0)
+  (2016,0)
+  (2017,0)
+  (2018,.5)
+  (2019,0)
+};
+% OS-Charms
+\addplot+[ybar,green] plot coordinates {
+  (2014,0)
+  (2015,0)
+  (2016,1)
+  (2017,0)
+  (2018,1)
+  (2019,0)
+};
+% TripleO
+\addplot+[ybar,yellow] plot coordinates {
+  (2014,0)
+  (2015,0)
+  (2016,0)
+  (2017,1)
+  (2018,0)
+  (2019,0)
+};
+% Kolla-Ansible
+\addplot+[ybar,cyan] plot coordinates {
+  (2014,0)
+  (2015,0)
+  (2016,0)
+  (2017,0)
+  (2018,1)
+  (2019,0)
+};
+\legend{
+  \strut Puppet OpenStack,
+  \strut OpenStack Ansible,
+  \strut Other solutions,
+  \strut OpenStack Helm,
+  \strut OpenStack Charms,
+  \strut TripleO,
+  \strut Kolla Ansible
+}
+\end{axis}
+\end{tikzpicture}
+\caption{Users of different methods as a distribution of adaptation year}
+\label{fig:used-methods}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\resizebox{!}{5cm}{
+\begin{tikzpicture}
+  \pie [rotate=180, color={green,blue,red}]
+  {66.7/Ubuntu,
+   22.2/CentOS,
+   11.1/RHEL}
+\end{tikzpicture}
+}
+\caption{Linux distributions used in target hosts}
+\label{fig:used-distros}
+\end{figure}
+
+Questionnaire was sent to people from thesis work group contact network.
+Altogether nine answers were received. Amount of answers was small due to
+questionnare being sent to a relatvely small contact network and due to
+aswering to it being voluntary. While providing small dataset, these facts make
+the answer data more reliable on other aspects. It would be possible to repeat
+the questionnaire to a larger respondent group and reflect those results to the
+ones from the contact network. However in this thesis any comparisons from the
+results will be done against OpenStack user surveys.
+
+Most of the respondents worked in academic organizations. Countries where the
+respondents were located were Denmark, Greece, Hungary, Norway, Sweden,
+Switzerland, Finland and the Netherlands. According to OpenStack user surveys,
+Europe has the third biggest user base of OpenStack, after Asia and North
+America. Whether this affects the usefulness of automation form the
+administrator's point of view is doubted.
+
+All of the respondents were fairly experienced system administrators; more than
+half had over ten years of professional IT working experience, with almost
+half having twenty or more years of working experience. The experience of the
+respondents provides some credibility. Earliest year for adapting a method was
+2014. At highest the time of using the method has been a little over half of
+the professional career of the respondent, more likely less than half of the
+professional career. This would suggest that the respondent is unlikely to be
+biased.
+
+Almost all of the repondents considered system administrator as their role, on
+third selecting product owner, and one project manager and software developer.
+This was to be expected, but it was also insightful to see that so many of the
+respondents also have responsibilities as product owner. This role may provide
+them with more authority over decisions regarding selected tools.
+
+Figure \ref{fig:used-methods} displays number of users for deployment methods
+per year of adaptation. OpenStack-Ansible is the most used deployment method
+with three users, one of which uses it in combination with OpenStack-Helm.
+OpenStack-Charms is the second most used method with two users. Year of
+adaptation does not indicate any specific trends with these two methods.
+
+For other deployment methods, there is some correlation with the trends in the
+community. Puppet-OpenStack, which is an early method for OpenStack deployment,
+was adapted early, while container based methods, Kolla Ansible and OpenStack
+Helm have been adapted more recently.
+
+Majority of the respondents have not used other deployment methods for
+production environments. While they possibly have used other methods for other
+use purposes, such as proofs-of-concept, this indicates that the deployment
+method chosen is not changed during operation.
+
+Linux distributions used for target hosts are shown on Figure
+\ref{fig:used-distros}. Ubuntu which has been the most widely used host
+operating system according to OpenStack community user surveys, is used by more
+than half of the respondents to this questionnaire as well.
+
+Figure \ref{fig:other-software-configurations} displays correlations of the
+used method to other software configurations. Only a minority does not or
+cannot use the underlying automation tool for other software configurations.
+This result suggests that automated deployment of OpenStack does not differ
+crucially from other system deployments. Almost half of the respondents were
+introduced to the automation tool by using it with OpenStack, but have since
+started to use it for other software configurations.
+
+\begin{figure}[t]
+\centering
+\resizebox{!}{5cm}{
+\begin{tikzpicture}
+  \pie [text=legend, rotate=180] {
+   22.2/Before using it with OpenStack,
+   44.4/After using it with OpenStack,
+   11.1/Both the previous,
+   11.1/None of the previous,
+   11.1/Tool is only applicable to OpenStack
+  }
+\end{tikzpicture}
+}
+\caption{Use of tool with other software configurations}
+\label{fig:other-software-configurations}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    ymin=0,
+    legend style={at={(0.5,-0.15)},
+      anchor=north,legend columns=-1},
+    ylabel={Distribution ($\%$)},
+    symbolic x coords={1,2,3,4,5},
+    xtick=data,
+    ]
+\addplot coordinates {(1,11.5) (2,15.4) (3,23.1) (4,34.6) (5,15.4)};
+\addplot coordinates {(1,11.5) (2,7.7)  (3,15.4) (4,30.8) (5,34.6)};
+\addplot coordinates {(1,0)    (2,22.2) (3,11.1) (4,66.7) (5,0)};
+\legend{Ease of use,Reliability,Completeness}
+\end{axis}
+\end{tikzpicture}
+\caption{Grading of deployment method}
+\label{fig:method-grading}
+\end{figure}
+
+Results from grading the deployment methods are displayed on Figure
+\ref{fig:method-grading}. Grade distributions for ease of use and reliability
+are averages of distributions of questions 1-3 and 4-6 on Figure
+\ref{fig:questionnaire-grading} correspondingly.
+
+Ease of use is graded slightly above medium in average. Overall the
+distribution is somewhat even showing no obvious trends. Correlation between
+previous experience with the tool and professional experience in overall cannot
+be analysed based on this testing due to the small data gathered. Previous
+experience with software automation might make any deployment methods feel easy
+which could affect this grading as well.
+
+Reliability of the used automation tools is graded well, with highest frequency
+grades being five and four. This is an important result as it points out that
+reliability is one of the benefits of the use of automation.
+
+Grading of completeness has more variance than the two other graded features.
+One technical reason for this can be the fact that completeness had only one
+graded scale, while distributions of usability and reliability are averaged
+over three scales for different lifecycle operations. Regardless, the fact that
+there were no highest or lowest grades given for completeness is unique for
+this feature. Additionally, medium grade was the least frequent of given
+grades, making the grade distribution of completeness different from other
+features as well. Most frequent grading for completeness with biggest
+difference from the next most frequent grade is four, providing a generally
+positive evaluation.
+
+Last optional question about any comments about the use of automation received
+a few responses. One of the reponses pointed out how vendors can affect the
+selection of tools, especially for smaller organizations; not relying on big
+vendors like RedHat or Canonical for small organizations could even provide a
+strategic risk. Another free text commented how easy adaptation of the tool is
+important, but that the method should be customizable for later development.
+
+\section{Hypothesis}
+
+Results from the questionnaire provide some insight to answer research question
+three in Figure \ref{fig:rqs} regarding the benefits of automated deployment
+methods. While a larger scale questionnaire might represent the community with
+more detail and provide data for more fine-grained analysis, some trends can be
+seen from the received answers.
+
+Even with a small set of respondents there are many different deployment
+methods in use. Since the questionnaire focuses on the use of automated
+solutions, it cannot be used for comparison with the use of manual deployments.
+However the fact that such a wide variety of different methods are being used
+suggests that there is no de facto solution for automating OpenStack
+deployment.
+
+The trends in the adaptation of different methods correlates to trends in the
+OpenStack community. This is to be expected as the nature of OpenStack is
+community-driven development. On top of that it is typical the the adapted
+methods take influence from regional and organizational factors.
+
+The fact that only a minority of respondents have not used the same automation
+tool for other software configurations indicates that usefulness of software
+configuration management often goes beyond deployment of a single software,
+such as OpenStack. A big part of the respondents started using the tool after
+being introduced to it by deploying OpenStack.
+
+For the most part, the use of current automation methods is graded well in
+terms of usability. Even though easiness did not get the highest grading for
+the most, it got an overall positive grading. While usability is not generally
+a priority on a tool used by professionals, many of the commercial software
+products invest in it as well. For instance Puppet Enterprice provides a
+browser based user interface, as does OpenStack Horizon.
+
+Reliability is the most commonly seen benefit of the deployment methods
+according to gradings in this questionnaire. While gradings of reliablity have
+some variance, it distributes strongly towards positive grades with the highest
+grade being the most frequent.
+
+Used methods are graded well in terms of completeness, however it distributes
+more unevenly than other features. This might indicate that there are some
+varying opinions regarding how suitable different methods are for the current
+needs of the deployment. It is a fact that automated deployment methods cannot
+reach a higher level of configurability than manual configurations. However
+the relatively positive grading in terms of completeness suggests that for many
+users, the level of configurability with the used automation tool is sufficient
+for the current needs.
+
+In summary, conducted questionnaire suggests that mainly system administrators
+benefit from the development of automated deployment methods. Use of automation
+provides reliability for administrative tasks, while being easy to use and
+sufficient for requirements.
+
 \begin{thebibliography}{9}
 
 \bibitem{aws}
@@ -1263,6 +1747,10 @@ Available: \textit{https://opendev.org/openstack/charm-deployment-guide/}
 \bibitem{puppet-deployment-guide}
 OpenStack Puppet Deployment Guilde, [Online]. \\
 Available: \textit{https://docs.openstack.org/puppet-openstack-guide/latest/}
+
+\bibitem{openstack-user-survey-2018}
+OpenStack 2018 User Survey Report, [Online]. \\
+Available: \textit{https://www.openstack.org/user-survey/2018-user-survey-report}
 
 \end{thebibliography}
 
