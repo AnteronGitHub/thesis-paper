@@ -15,6 +15,10 @@
 
 \pgfplotsset{width=9cm,compat=1.8}
 
+\usepackage{tikz}
+\usetikzlibrary{backgrounds,calc,shadings,shapes.arrows,shapes.symbols,shadows}
+\definecolor{switch}{HTML}{006996}
+
 \newcommand{\pluseq}{\mathrel{+}=}
 
 \title{Automated Software Configuration for Cloud Deployment}
@@ -55,6 +59,175 @@
 
 \newtheorem{theorem}{Theorem}[chapter]
 \newenvironment{proof}{\noindent\textbf{Proof.} }{$\Box$}
+
+\makeatletter
+\pgfkeys{/pgf/.cd,
+  parallelepiped offset x/.initial=2mm,
+  parallelepiped offset y/.initial=2mm
+}
+\pgfdeclareshape{parallelepiped}
+{
+  \inheritsavedanchors[from=rectangle] % this is nearly a rectangle
+  \inheritanchorborder[from=rectangle]
+  \inheritanchor[from=rectangle]{north}
+  \inheritanchor[from=rectangle]{north west}
+  \inheritanchor[from=rectangle]{north east}
+  \inheritanchor[from=rectangle]{center}
+  \inheritanchor[from=rectangle]{west}
+  \inheritanchor[from=rectangle]{east}
+  \inheritanchor[from=rectangle]{mid}
+  \inheritanchor[from=rectangle]{mid west}
+  \inheritanchor[from=rectangle]{mid east}
+  \inheritanchor[from=rectangle]{base}
+  \inheritanchor[from=rectangle]{base west}
+  \inheritanchor[from=rectangle]{base east}
+  \inheritanchor[from=rectangle]{south}
+  \inheritanchor[from=rectangle]{south west}
+  \inheritanchor[from=rectangle]{south east}
+  \backgroundpath{
+    % store lower right in xa/ya and upper right in xb/yb
+    \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/parallelepiped
+      offset x}}
+    \pgfmathsetlength\pgfutil@tempdimb{\pgfkeysvalueof{/pgf/parallelepiped
+      offset y}}
+    \def\ppd@offset{\pgfpoint{\pgfutil@tempdima}{\pgfutil@tempdimb}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathclose
+    \pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@ya}}{\ppd@offset}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@yb}}{\ppd@offset}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xa}{\pgf@yb}}{\ppd@offset}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@yb}}{\ppd@offset}}
+  }
+}
+\makeatother
+
+\tikzset{ports/.style={
+    line width=0.3pt,
+    top color=gray!20,
+    bottom color=gray!80
+  },
+  rack switch/.style={
+    parallelepiped,fill=white, draw,
+    minimum width=1.25cm,
+    minimum height=0.25cm,
+    parallelepiped offset x=2mm,
+    parallelepiped offset y=1.25mm,
+    xscale=-1,
+    path picture={
+      \draw[top color=gray!5,bottom color=gray!40]
+      (path picture bounding box.south west) rectangle
+      (path picture bounding box.north east);
+      \coordinate (A-west) at ([xshift=-0.2cm]path picture bounding box.west);
+      \coordinate (A-center) at ($(path picture bounding box.center)!0!(path
+        picture bounding box.south)$);
+      \foreach \x in {0.275,0.525,0.775}{
+        \draw[ports]([yshift=-0.05cm]$(A-west)!\x!(A-center)$)
+          rectangle +(0.1,0.05);
+        \draw[ports]([yshift=-0.125cm]$(A-west)!\x!(A-center)$)
+          rectangle +(0.1,0.05);
+       }
+      \coordinate (A-east) at (path picture bounding box.east);
+      \foreach \x in {0.085,0.21,0.335,0.455,0.635,0.755,0.875,1}{
+        \draw[ports]([yshift=-0.1125cm]$(A-east)!\x!(A-center)$)
+          rectangle +(0.05,0.1);
+      }
+    }
+  },
+  server/.style={
+    parallelepiped,
+    fill=white, draw,
+    minimum width=0.35cm,
+    minimum height=0.75cm,
+    parallelepiped offset x=3mm,
+    parallelepiped offset y=2mm,
+    xscale=-1,
+    path picture={
+      \draw[top color=gray!5,bottom color=gray!40]
+      (path picture bounding box.south west) rectangle
+      (path picture bounding box.north east);
+      \coordinate (A-center) at ($(path picture bounding box.center)!0!(path
+        picture bounding box.south)$);
+      \coordinate (A-west) at ([xshift=-0.575cm]path picture bounding box.west);
+      \draw[ports]([yshift=0.1cm]$(A-west)!0!(A-center)$)
+        rectangle +(0.2,0.065);
+      \draw[ports]([yshift=0.01cm]$(A-west)!0.085!(A-center)$)
+        rectangle +(0.15,0.05);
+      \fill[black]([yshift=-0.35cm]$(A-west)!-0.1!(A-center)$)
+        rectangle +(0.235,0.0175);
+      \fill[black]([yshift=-0.385cm]$(A-west)!-0.1!(A-center)$)
+        rectangle +(0.235,0.0175);
+      \fill[black]([yshift=-0.42cm]$(A-west)!-0.1!(A-center)$)
+        rectangle +(0.235,0.0175);
+    }
+  },
+}
+
+\usetikzlibrary{calc, shadings, shadows, shapes.arrows}
+
+% Styles for interfaces and edge labels
+\tikzset{%
+  interface/.style={draw, rectangle, rounded corners, font=\LARGE\sffamily},
+  ethernet/.style={interface, fill=yellow!50},% ethernet interface
+  serial/.style={interface, fill=green!70},% serial interface
+  speed/.style={sloped, anchor=south, font=\large\sffamily},% line speed at edge
+  route/.style={draw, shape=single arrow, single arrow head extend=4mm,
+    minimum height=1.7cm, minimum width=3mm, white, fill=switch!20,
+    drop shadow={opacity=.8, fill=switch}, font=\tiny}% inroute/outroute arrows
+}
+\newcommand*{\shift}{1.3cm}% For placing the arrows later
+
+% The router icon
+\newcommand*{\router}[1]{
+\begin{tikzpicture}
+  \coordinate (ll) at (-3,0.5);
+  \coordinate (lr) at (3,0.5);
+  \coordinate (ul) at (-3,2);
+  \coordinate (ur) at (3,2);
+  \shade [shading angle=90, left color=switch, right color=white] (ll)
+    arc (-180:-60:3cm and .75cm) -- +(0,1.5) arc (-60:-180:3cm and .75cm)
+    -- cycle;
+  \shade [shading angle=270, right color=switch, left color=white!50] (lr)
+    arc (0:-60:3cm and .75cm) -- +(0,1.5) arc (-60:0:3cm and .75cm) -- cycle;
+  \draw [thick] (ll) arc (-180:0:3cm and .75cm)
+    -- (ur) arc (0:-180:3cm and .75cm) -- cycle;
+  \draw [thick, shade, upper left=switch, lower left=switch,
+    upper right=switch, lower right=white] (ul)
+    arc (-180:180:3cm and .75cm);
+  \node at (0,0.5){\color{blue!60!black}\Huge #1};% The name of the router
+  % The four arrows, symbols for incoming and outgoing routes:
+  \begin{scope}[yshift=2cm, yscale=0.28, transform shape]
+    \node[route, rotate=45, xshift=\shift] {\strut};
+    \node[route, rotate=-45, xshift=-\shift] {\strut};
+    \node[route, rotate=-135, xshift=\shift] {\strut};
+    \node[route, rotate=135, xshift=-\shift] {\strut};
+  \end{scope}
+\end{tikzpicture}}
+
+\makeatletter
+\pgfdeclareradialshading[tikz@ball]{cloud}{\pgfpoint{-0.275cm}{0.4cm}}{%
+  color(0cm)=(tikz@ball!75!white);
+  color(0.1cm)=(tikz@ball!85!white);
+  color(0.2cm)=(tikz@ball!95!white);
+  color(0.7cm)=(tikz@ball!89!black);
+  color(1cm)=(tikz@ball!75!black)
+}
+\tikzoption{cloud color}{\pgfutil@colorlet{tikz@ball}{#1}%
+  \def\tikz@shading{cloud}\tikz@addmode{\tikz@mode@shadetrue}}
+\makeatother
+
+\tikzset{my cloud/.style={
+     cloud, draw, aspect=2,
+     cloud color={gray!5!white}
+  }
+}
 
 \begin{document}
 
@@ -1142,7 +1315,7 @@ large-scale deployments of OpenStack. Puppet OpenStack consists of Puppet
 modules for each of the OpenStack components. Each of the modules has its own
 source repository.
 
-\chapter{Questionnaire}
+\chapter{Questionnaire} \label{questionnaire}
 
 A small scale questionnaire was conducted for OpenStack administrators.
 Questionnaire explored the methods being used, and different aspects of using
@@ -1621,6 +1794,418 @@ benefit from the development of automated deployment methods. Use of automation
 provides reliability for administrative tasks, while being easy to use and
 sufficient for requirements.
 
+\chapter{Evaluation}
+
+OpenStack-Ansible deployment method was tested in a virtualized environment.
+Method was picked due to its popularity in the results of questionnaire shown
+on Chapter \ref{questionnaire} and its low-level nature. Scope of evaluation is
+to explore the tasks needed for automated deployment of an operational
+production-grade OpenStack cloud.
+
+Goal of the evaluation is to provide more insight to research questions shown
+on Figure \ref{fig:rqs} from one deployment method's point of view. Instead of
+relying merely on reference literature, and available documentation, deployment
+provides experience on low-level aspects to support other sources. According to
+OpenStack user survey 2018 \cite{openstack-user-survey-2018}, documentation of
+OpenStack is seen as one of the areas requiring improvements while at the same
+time it is seen as one of the most appreciated aspects of OpenStack.
+
+Deployment was kept as simple as possible while also being technically
+sufficient for a production-grade environment. OpenStack production
+environments differ from development environments much the same than any in any
+software applications: production logging is less verbose and software running
+in production mode is more optimized by omitting unnecessary functionality.
+
+Many OpenStack development environment deployments utilize only a single
+machine. With performant and reliable cloud deployment, services will have to
+be distributed among multiple target machines, and deployment host containing
+secrets such as authorized SSH keys and internal service credentials, has to be
+separated from runtime enviroments for security reasons. Having separate
+machine for deployment assets, makes it possible to have network-level security
+policies. For instance SSH access to hosts running OpenStack services can be
+allowed from the deployment hosts only.
+
+Since production architectures are designed based on specific needs, deployment
+is kept as simple as possible, with the possibility of extending functionality
+according to custom needs. Thus there are only few requirements of the cloud
+functionality. Basically it should be possible to create virtual networks and
+virtual machines.
+
+\section{Setup}
+
+\begin{figure}[!b]
+\centering
+
+\begin{tikzpicture}[scale=.5]
+
+\node[server](deploy-host){};
+\node[server, left of= deploy-host, xshift=-1cm](target-host){};
+
+\node[rack switch, above of=deploy-host,yshift=1cm]
+  (management-switch){};
+\node[rack switch, left of=management-switch, xshift=-1cm](tunnel-switch){};
+\node[rack switch, left of=tunnel-switch, xshift=-1cm](storage-switch){};
+
+\node[yshift=1cm, above of=management-switch,scale=0.2] (brouter) {\router{}};
+
+\node[yshift=1cm,my cloud, minimum width=1.25cm, minimum height=1.55cm,
+  above of=brouter,font=\large] (internet) {Internet};
+
+% Label nodes
+\node[below of = deploy-host,xshift=-1.5cm]{Deployment Host};
+\node[below of = target-host,xshift=0.5cm]{Target Host};
+\node[left of = management-switch,xshift=-2cm]{Management Network};
+\node[above of = tunnel-switch,yshift=.5cm,xshift=.8cm,rotate=45]{Tunnel Network};
+\node[above of = storage-switch,yshift=.5cm,xshift=.8cm,rotate=45]{Storage Network};
+\node[left of = brouter,xshift=-1.5cm]{Gateway Router};
+
+% Edges
+\draw[thick,darkgray!10!gray] (deploy-host.north)--(management-switch);
+\draw[thick,darkgray!10!gray] (target-host.north)--(management-switch);
+\draw[thick,darkgray!10!gray] (target-host.north)--(tunnel-switch);
+\draw[thick,darkgray!10!gray] (target-host.north)--(storage-switch);
+\draw[thick,darkgray!10!gray] (brouter)--(management-switch);
+\draw[thick,darkgray!10!gray] (internet)--(brouter);
+
+\end{tikzpicture}
+
+\caption{Test Setup Network Topology}
+\label{fig:test-setup-network-topology}
+\end{figure}
+
+Setup used for test deployment simulates physical dataset topology depicted in
+Figure \ref{fig:test-setup-network-topology}. Topology is based on deployment
+guide of OpenStack-Ansible \cite{openstack-ansible}. By using virtual local
+area networks, three separate physical switches as shown on the diagram would
+not be needed, but instead a topology such as FatTree or Clos could be used in
+a data center. Separate physical network devices do however ensure that
+congestion in one network does not propagate to the other. It is also
+recommended to use multiple physical network interfaces connected to separate
+switches and bond them into the same bridge for redundancy.
+
+In the simplest multi-node deployment setup, two hosts are used.
+\textit{Deployment host} includes all of the assets needed for deployment,
+including OpenStack-Ansible repository, Ansible roles used in deployment,
+installation of Ansible, deployment configuration files, and secrets.
+\textit{Target host} includes all of the OpenStack services and necessary
+infrastructure services. When scaling deployment horizontally, instead of
+having a single target host for all of the deployed software, setup could have
+distinct hosts dedicated to compute services, storage services, and
+infrastructure services.
+
+\textit{Management network} is the only network routed to the Internet. It is
+mainly used for management access to target host, and for egress internet
+traffic. All of the hosts used in deployment will have to be connected to this
+network. \textit{Tunnel network} is used for guest network traffic. Compute and
+network nodes will have to be connected to it. \textit{Storage network} is used
+for network volume traffic. Volume nodes are connected to it.
+
+OpenStack cloud environment, called cPouta, provided by CSC Center for Science
+Ltd. was used for virtualized test setup. While using a cloud service provides
+benefits such as automated resource provisioning and configuration, it also
+adds room for error. There is more components to troubleshoot when experiencing
+issues. There may also be known issues in the cloud service that affect tasks
+executed during evaluation. The same applies to any used software, including
+operating systems. The benefits of using a cloud platform include fast and
+automated infrastructure provisioning which makes testing more easily
+repeatable.
+
+Using virtualized environment as an infrastructure for testing differs from
+physical data center in some aspects. Even though hypervisors can be run within
+virtual machines and overlay networks can be constructed on top of existing
+overlay networks, there are some details that have to taken into consideration
+when deploying a cloud inside a cloud.
+
+Since infrastructure provisioning is outside of the scope of OpenStack-Ansible,
+host machines and virtual networks were provisioned with custom Heat stack
+templates. Infrastructure provisioning from OpenStack cloud is conceptually
+similiar to how TripleO uses undercloud or how Juju uses cloud providers.
+
+Test environment was provisioned by using Heat orchestration tool. Heat
+provisions servers for hosts and networks used in deployment. Additionally some
+basic configurations were applied with cloud-init. Host configurations executed
+with Heat make prerequisite system preparations shown on Figure
+\ref{fig:osa-requirements}. Nameserver specified on the target host
+\textit{resolv.conf} file had to be changed in order to provide functioning dns
+resolution.
+
+\begin{figure}[!b]
+\centering
+\begin{enumerate}
+  \itemsep0em
+  \item External network bridges are configured for nodes.
+  \item SSH keys used in deployment are injected to target machines.
+\end{enumerate}
+\caption{Minimal prerequisites for OpenStack-Ansible multi-node deployment}
+\label{fig:osa-requirements}
+\end{figure}
+
+Assumption with OpenStack-Ansible is that the subnets belong to separate VLANS.
+With the test setup running in OpenStack, VXLAN segregation was used instead.
+Difference with this approach is that, additional VLAN tagging is not employed
+on guest hosts, but instead network interfaces are created by OpenStack
+Neutron, and they are bridged without additional package tagging.
+
+Ubuntu Bionic (18.04) was used for host machines. Since from release 17, Ubuntu
+uses Netplan \cite{netplan} as the default network interface renderer. In order
+to use legacy NetworkD service without additional setup programs, Netplan is
+disabled and masked. Network bridges are then defined with NetworkD
+configuration files.
+
+\section{Deployment}
+
+Once deployment host is prepared, OpenStack-Ansible repository includes shell
+script for bootstrapping OpenStack Ansible deployment. Script installs Ansible
+and the roles used in deployment. It hooks configuration files to be used in
+OpenStack Ansible execution.
+
+Once OpenStack Ansible is prepared, configuration files have to be installed on
+the deployment server, which was done with a custom Ansible playbook.
+OpenStack-Ansible uses three configuration files for describing the deployment.
+
+\textit{openstack\_user\_config.yml} file describes which hosts are used for
+particular services, and IP addressing. It maps different node types to
+hostnames or IP addresses. Same IP can be used for multiple different node
+types, and when OpenStack is deployed to a single host, all of the node groups
+point to the same IP.
+
+CIDRs for each of the configured networks are listed in
+\textit{openstack\_user\_config.yml} file. Container network interfaces are
+defined as well. Type of the mechanism used for plugging container interfaces
+to appropriate network bridges can be specified in configuration. Virtual
+ethernet pairs were used in the test deployment as it is the most common
+mechanism according to OpenStack-Ansible documentation
+\cite{openstack-ansible}.
+
+Most of the configurations specified in \textit{openstack\_user\_config.yml}
+file do not need to be specified with some of the other deployment methods such
+as Kolla Ansible or OpenStack Charms. More high-level deployment methods can
+provide a default configuration for network bridges and container interfaces.
+These bridges could also be configured automatically for a proof-of-concept
+installation with OpenStack-Ansible. Reason for low-level network configuration
+is likely the fact that OpenStack-Ansible is used for data center deployments
+with varying topologies. While providing more configurability, this method has
+potential for error due to environment setup not matching the configuration
+specified for OpenStack-Ansible.
+
+\textit{user\_variables.yml} defines parameters used by Ansible roles in
+deployment. Many of the specified parameters describe configuration parameters
+used for the installed programs, but some specify installation features.
+
+In order to get the deployment functioning, HTTPS protocol had to be specified
+for public, internal, and administrative api endpoints, and TLS verification
+had to be set off. Without these specifications some of the verification tasks
+failed due to Ansible trying to use HTTP requests for HTTPS endpoints, or due
+to warnings about untrusted self-signed TLS certifiates.
+
+Default installation method is to used source code and install programs with
+pip into virtual enviroments. While this method takes longer than using
+prepared distribution packages it is the most reliable method for test
+deployments, since it guarantees that appropriate versions are being used for
+OpenStack services. New OpenStack releases are not always published to public
+repositories for package managers such as apt or yum. For long term operations
+it would be possible to create custom distribution packages for new OpenStack
+releases.
+
+While providing a minimal required configuration for a successful deployment,
+in a production level deployment TLS verification would not have to be turned
+off, since the deployer would likely provide certificates signed by a trusted
+authority. There would likely be other configuration variables that would be
+specified according to custom needs. However a simple deployment can be run
+successfully with five specified configuration parameters in
+\textit{user\_variables.yml} file.
+
+Third configuration file, \textit{user\_secrets.yml} contains secrets used in
+deployment, including credentials to various services used by administrators
+and other deployed service users. OpenStack-Ansible repository includes a
+Python script for generating random secrets. While having all of the deployment
+secrets in a single file makes it easier to leak all of the passwords at the
+same time, it has benefits as well. For deployer it provides easy access to all
+of the deployed services without having to separately read a distinct file for
+service to be accessed. Proper secret management is not part of the scope of
+OpenStack-Ansible, and other solutions for it can be used as needed.
+
+In case some of the secrets would leak, generating new ones with the script
+would be fast. However installation playbook is not idempotent and thus using
+it as a methods for disaster recovery would require the entire OpenStack to be
+re-installed. Depending on how this is done it could have a big impact on the
+service operation.
+
+After preparation, OpenStack can be installed according to configurations by
+running a single Ansible playbook. Installation consists of three phases and
+in test setup it took approximately two hours when installing from source code.
+First Ansible prepares target hosts. During this phase LXC containers for each
+of the services are initialized and plugged into networks. During the second
+phase the infrastructure services required by OpenStack services are installed
+and configured. Finally OpenStack services themselves are installed according
+to configuration specifications.
+
+\section{Verification}
+
+As with any software, verification of an operational OpenStack deployment
+depends on the expected functionality. With any requirements however, there are
+some indications of a failed deployment, such as SystemD services in failed
+state or network connectivity issues. After running Ansible playbooks
+successfully, these features were checked with operating system functionality
+and network diagnostic tools. Many of the basic issues such as problems with
+connectivity, will likely result in failed playbook execution.
+
+Approaches to verifying software configurations can be highly analytical, and
+based on static checks. Rehearsal \cite{rehearsal} is a software developed for
+verifying system configurations applied with puppet. While similiar tools can
+be created for other software configuration management tools, this paper
+focuses on core functionality which is simple enough to verify manually.
+
+OpenStack-Ansible includes tasks for both setting up some basic resources such
+as provider networks and machine images, as well as verifying functional cloud
+by using automated tests. These features can be enables with configuration
+parameters. These tasks were not used in evaluation in order to focus on the
+core deployment functionality. In order to provide transparent testing of the
+deployment, running the basic verification operations manually was seen
+sufficient. Once the deployment is confirmed functional these tasks could
+be used for further cloud deployments.
+
+The initial deployment is difficult to keep as small as adding a single service
+at a time. It entails a lot of tasks that depend on one another. For this
+reason it is kept as simple as possible while enabling expansion as potential
+future work.
+
+For verifying operational deployment, tasks shown on Figure
+\ref{fig:verify-tasks} were executed. Tasks verify the functionality of most
+essential OpenStack services, Keystone, Glance, Neutron, and Nova. More
+services can be added, once the basic services are confirmed operational.
+
+CirrOS image used for virtual machine testing is a machine image commonly used
+for verifying OpenStack deployment. Its raw image file was downloaded from the
+official source and provided for Glance API in image creation request.
+
+Once machine image was uploaded successfully, tenant network was created for
+virtual machines. With tenant network created, host flavor for virtual machines
+had to be created. With an image, network and a flavor guest hosts could be
+created to verify that Nova API works properly. When plugging guest hosts to
+the same tenant network, connectivity can be verified by using tenant network
+private ip addresses. For ICMP network diagnostics ingress firewall rules have
+to be set up accordingly.
+
+While functionality verified for the test setup contains only a subset of
+necessary features of an operational OpenStack deployment, it was sufficent to
+confirm that the deployment matched the specified configuration. Some of the
+deployed features were not verified as they were not seen necessary for
+providing answers to research questions. Verification performed during the
+evaluation is sufficient to bring out features offered by OpenStack-Ansible
+deployment method as well as its benefits and tradeoffs. Any further
+enhancements to the deploymet could be left as future work.
+
+\begin{figure}[t]
+\centering
+\begin{enumerate}
+  \itemsep0em
+  \item Upload CirrOS image to Glance.
+  \item Create private Neutron network and subnet.
+  \item Enable ICMP ingress security group rule in default security group.
+  \item Create test flavor for virtual machines.
+  \item Create two Nova virtual servers in private network using CirrOS image.
+  \item Open console session with virsh to one of the created Nova servers.
+  \item Confirm network access between the two deployed servers by pinging one
+        from the other.
+\end{enumerate}
+\caption{Verification tasks for deployment}
+\label{fig:verify-tasks}
+\end{figure}
+
+\section{Hypothesis}
+
+Designing and deploying a testbed for OpenStack-Ansible provided clarified how
+automated deployments for OpenStack are prepared and executed. Not many manual
+administrative tasks were required during deployment. However due to Ansible's
+verbose logging and descriptive task naming, it was easy to see which tasks
+were executed during deployment. Tasks describe what configuration items are
+involved in deployment, and what kind of configurations are applied.
+
+To answer research question RQ1 in Figure \ref{fig:rqs}, one of the key factor
+affecting the design of OpenStack-Ansible is the ability to provide automated
+deployment of OpenStack on top of a pre-existing server infrastructure. This
+choice provides configurability at the cost of having to carry the
+responsibility of low-level setup of the infrastructure. In comparison to some
+of the other deployment methods, OpenStack-Ansible architecture has to be
+designed in detail before the deployment. The deployment configuration has
+correspond to the existing infrastructure. This design is fundamental to
+OpenStack-Ansible which provides a batteries-included deployment method, as
+stated in its manifest \cite{openstack-ansible}.
+
+Getting started with using OpenStack-Ansible for a multi-node deployment was
+not as easy as using a development environment setup, such as Packstack.
+Getting the deployment working required multiple trials and some
+troubleshooting. Installing OpenStack services manually might be more easy in
+the beginning. However with automation tools once the issues were resolved the
+deployment could be repeated easily. This applied also to infrastructure
+provisioning with Heat. Even though it was not tested, automated deployment is
+likely to scale better than manual installation.
+
+Ideally when a change in the configuration of the production environment would
+have to be made, the configuration could be properly tested in a staging
+environment and the be run in production environment avoiding operational
+errors. This approach requires a testbed that is structurally similiar to the
+production environment. Since hosts can be accurately emulated by using
+hypervisors, network setup used in evaluation was the most different from a
+datacenter network, since VLAN provisioning was not available in the used
+OpenStack platform.
+
+Due to OpenStack deployment test setups never totally matching production
+environments, there is always room to question the benefit of automated
+deployment methods as experienced in a test. However based on the experiences
+during evaluation, use of software automation shows a lot of potential for
+deployment of OpenStack production environment. Reliability which was seen as
+one of the strengths of automated deployment methods in questionnaire on
+Chapter \ref{questionnaire} could be confirmed as it was to reproduce once
+successfully executed deployment.
+
+Features listed above benefit primarily system administrators, as they would be
+the ones running the configurations manually otherwise. In case of issues, the
+administrators would still have do the troubleshooting. If the deployment is
+configured correctly, administrators do not have to worry about applying the
+configuration to the targeted system. While repeating the same configuration
+tasks creates a routine for the administrator, when updates are applied to the
+system, some of the confiuration tasks may be new and require some prior
+testing.
+
+In addition to administrators benefiting from the development of automation
+tools, developers benefit from it as well. Software developers have a tendency
+to focus on application development and not environment setups. Due to Ansible
+playbooks describing environment setup tasks concretely, they function as a
+type of documentation. This could be seen during evaluation of OpenStack
+Ansible when at one point a role was resulting in failure. The role's tasks
+described in YAML format, provided detailed description of the task that was
+run. Combining this description to the error log enabled the root issue to be
+revealed and fixed. This process brought out some details of the overall
+deployment.
+
+The evaluation of OpenStack Ansible provided an introduction to automated
+deployment of OpenStack. Not using an all-in-one deployment method but instead
+configuring an optimized deployment required understanding of both OpenStack
+services, underlying infrastructure services as well as networking concepts
+related to both the test environment and LXC containers. Evaluation brought out
+some details that were not found in any documentation. It is common in a large
+software stack for some details to change constantly. Keeping documentation up
+to date with these changes is difficult. For this reason it is often stated in
+the documentation to consult the documentation of any software dependencies
+directly instead.
+
+OpenStack-Ansible provided very little features as a deployment method.
+Following the design principle of Ansible, OpenStack-Ansible included no other
+configuration items that deployment host, which had to be prepared by the
+deployer. Most of the work during the evaluation was related the preparation of
+the deployment and not the configuration of the actual deployment. This is
+characteristic to OpenStack-Ansible. It is agnostic of the underlying
+infrastructure and focuses on automating the configuration operations only.
+
+Once deployment was configured properly, its execution succeeded without
+exception. Reliability from administrator's point of view, which was one of the
+key findings of questionnaire in Chapter \ref{questionnaire} could thus be
+confirmed during this evaluation. Other benefits of configuration management
+tool included easy execution. Configuration file sources made it easier to
+learn how OpenStack is deployed.
+
 \begin{thebibliography}{9}
 
 \bibitem{aws}
@@ -1751,6 +2336,16 @@ Available: \textit{https://docs.openstack.org/puppet-openstack-guide/latest/}
 \bibitem{openstack-user-survey-2018}
 OpenStack 2018 User Survey Report, [Online]. \\
 Available: \textit{https://www.openstack.org/user-survey/2018-user-survey-report}
+
+\bibitem{netplan}
+Netplan, [Online]. \\
+Available: \textit{https://netplan.io/}
+
+\bibitem{rehearsal}
+Rian Shambaugh, Aaron Weiss, Arjun Guha:
+\\\href{https://dl.acm.org/doi/pdf/10.1145/2908080.2908083}{Rehearsal: A
+Configuration Verification Tool for Puppet},
+SIGPLAN, June 2016
 
 \end{thebibliography}
 
