@@ -1794,7 +1794,7 @@ benefit from the development of automated deployment methods. Use of automation
 provides reliability for administrative tasks, while being easy to use and
 sufficient for requirements.
 
-\chapter{Evaluation}
+\chapter{Evaluation} \label{evaluation}
 
 OpenStack-Ansible deployment method was tested in a virtualized environment.
 Method was picked due to its popularity in the results of questionnaire shown
@@ -2205,6 +2205,96 @@ key findings of questionnaire in Chapter \ref{questionnaire} could thus be
 confirmed during this evaluation. Other benefits of configuration management
 tool included easy execution. Configuration file sources made it easier to
 learn how OpenStack is deployed.
+
+\chapter{Summary}
+
+This paper has presented contemporary methods for automating configuration
+tasks for a cloud platform deployment. Different designs, as well as tools and
+components included in deployment methods have been introduced. Other
+differences between methods have been explored as well. Lastly, some of the
+benefits of the development of automated tools have been presented and
+reasoned.
+
+Answers to research questions shown on Figure \ref{fig:rqs} are based on
+reference publications, technical documentation, a small scale questionnaire,
+as well as a deployment test conducted in a virtualized environment. There have
+not been conflicting results gained from different sources although some of the
+methods focus on different aspects of the research.
+
+Topic of this paper is motivated by contemporary practices in IT infrastructure
+management utilizing cloud computing and popularity of automating system
+configuration tasks. These trends have emerged from years of providing
+large scale internet-based services. Recent developments in virtualization
+technologies have helped to automate different administrative tasks. At the
+same time organizations adapting agile philosophies for IT service management
+has created need to increase the level of automation in service management.
+
+Cloud computing has provided scalable infrastructure for services provided over
+the internet. Cloud platforms can provide infrastructure as a service for
+external organizations or different departments in the same organization. Cloud
+platforms are administered much the same way than other IT services. In order
+to be profitable cloud platforms need to be large. Administrative tasks in
+cloud datacenters can become time-consuming, difficult, and entail a lot of
+operational risks.
+
+OpenStack is a family of open-source software projects for running cloud
+platform. It has been developed by various organizations and community
+contributions. Currently OpenStack is the most commonly used software for
+running private clouds. It is being used by big organizations in
+telecommunication, retail, finance and scientific research. Systm
+architecturally OpenStack bears close resemblance to other popular public cloud
+platforms AWS, Azure and GCP.
+
+Software configuration management has become a popular solution for
+administering datacenters. It provides means to create configurations that are
+applied to the system by a computer program. While there are technically no
+limits to configurations that can be applied with automated tools, different
+tools provide varying functionality. Automation tools have different software
+architectures that affect how complex configuration tasks are structured.
+
+OpenStack community has created various official deployment methods that
+utilize software configuration management tools. Deployment methods follow best
+practices of the underlying automation tools and focus on configuring OpenStack
+services to available server infrastructure. Some deployment methods include
+infrastructure provisioning while others are run against pre-existing server
+infrastructure. Design of different automated deployment methods is driven by
+their use purposes. Methods may focus on easy adaptation, extendability,
+configurability or operability with varying emphasis.
+
+Some of the deployment methods only include assets for an initial deployment of
+OpenStack. Further operation and maintenance would then have to be provided
+with custom solutions or by using other tools available. Other deployment
+methods include functionality for scaling, updating, or health monitoring the
+deployment. The latter type of deployment methods usually contains more
+configuration items, whose operation has to be assured during cloud operations.
+The former type does often not include any additional software dependencies
+than tool used for the deployment itself.
+
+There are parties that may benefit from the use of automation tools indirectly.
+In case automation can be used for providing high quality service in an
+affordable fashion, both the service providers and end users benefit from it.
+While hhis benefit may even seem obvious it is difficult to prove, since the
+actual measurements on savings can be complex and a subject to non-disclosure.
+
+Since automated tools are primarily used by system administrators, they are the
+primary beneficiaries from the development of the tools. Results from
+questionnaire presented in Chapter \ref{questionnaire} suggest that system
+administrators benefit from reliability when using automated software
+configuration tools. Reliability was also noticable in evaluation shown on
+Chapter \ref{evaluation} as succesful execution was easily repeatable.
+
+At the moment it would seem that the use of automated solutions for system
+administration will keep on gaining popularity. Since use of automation in
+general is increasing and being applied in areas such as decision making, using
+it to be able to automate system administration tasks is not totally
+unexpected. In addition to providing reliability for repeating tasks, it may
+even create new possibilities for management of large scale IT infrastructures.
+
+There are no obvious solutions or de facto software for automating
+infrastructure management, although some methods are more popular than others.
+Even though some methods will inevitably become deprecated at some point, the
+need for automation for infrastructure management has a number of reasons to
+stay relevant.
 
 \begin{thebibliography}{9}
 
