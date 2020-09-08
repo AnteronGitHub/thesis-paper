@@ -71,7 +71,7 @@ Science]
   \newcommand{\tktla@additionalkeywords}{{#1}}}
 \newcommand{\crcshort}[1]{\newcommand{\tktla@crcshort}{{#1}}}
 \newcommand{\crclong}[1]{\newcommand{\tktla@crclong}{#1}}
-\newcommand{\tktla@pubtype}{Seminar Paper}
+\newcommand{\tktla@pubtype}{Master's Thesis}
 \newcommand{\pubtype}[1]{\renewcommand{\tktla@pubtype}{{#1}}}
 \newcommand{\tktla@copyright}{
   Copyright \copyright{} \tktla@pubyear{} \@author}
@@ -172,11 +172,10 @@ Science]
       \@author\par
       \quad\par
       Department of Computer Science\par
+      Faculty of Science\par
       P.O. Box 68, FI-00014 University of Helsinki, Finland\par
       \tktla@authorcontact\par
       \quad\par
-      \tktla@pubtype, Series of Publications A, Report
-        A-\tktla@pubyear-\tktla@pubno\par
       Helsinki, \tktla@pubmonth{} \tktla@pubyear, \tktla@pages{} pages\par
       \tktla@printisxns
       \quad\par
@@ -193,19 +192,6 @@ Science]
 %      \textbf{Computing Reviews (1998) Categories and Subject \\
 %        Descriptors:}\nopagebreak
 % If 2012 classification system is used
-      \textbf{Computing Reviews (2012) Categories and Subject \\
-        Descriptors:}\nopagebreak
-      \begin{list}{}{
-          \setlength{\partopsep}{0pt}
-          \setlength{\topsep}{0pt}
-          \setlength{\leftmargin}{3em}
-          \setlength{\itemsep}{0pt}
-          \setlength{\parsep}{0pt}
-          \setlength{\labelsep}{0.5em}
-          \setlength{\labelwidth}{2.5em}
-          \renewcommand{\makelabel}[1]{##1\hspace{\fill}}}
-        \tktla@crclong
-      \end{list}
       \quad\par
       \textbf{General Terms:}\par\nopagebreak
       \tktla@generalterms\par

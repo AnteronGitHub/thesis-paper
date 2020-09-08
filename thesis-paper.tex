@@ -23,14 +23,14 @@
 
 \title{Automated Software Configuration for Cloud Deployment}
 \author{Antero Vainio}
-\authorcontact{antero.vainio@helsinki.fi}
+\authorcontact{}
 \pubtime{September}{2020}
 \reportno{}
 \isbnpaperback{}
 \isbnpdf{}
 \issn{}
 \printhouse{}
-\pubpages{7} % --- remember to update this!
+\pubpages{52} % --- remember to update this!
 % For monographs, the number of the last page of the list of references
 % For article-based theses, the number of the last page of the list of
 % references of the preamble part + the total number of the pages of
@@ -39,9 +39,9 @@
 \preexaminera{}
 \preexaminerb{}
 \custos{}
-\generalterms{thesis, example, another example, still more examples,
-  more and more examples}
-\additionalkeywords{example, an example phrase with many words}
+\generalterms{Networking, Virtualization, Distributed Systems}
+\additionalkeywords{Cloud Computing, IaaS, Software Automation, System
+Administration, DevOps, IaaC}
 % Computing Reviews 1998 style
 %\crcshort{A.0, C.0.0}
 %\crclong{
@@ -49,12 +49,9 @@
 %\item[C.0.0] Another Example
 %}
 % Computing Reviews 2012 style
-\crclong{
-\item Example Category $\rightarrow$ And its subcategory $\rightarrow$ And sub-subcategory
-\item Another Example  $\rightarrow$ And its subcategory
-}
 \permissionnotice{
-    Thesis paper, to be published.
+    Master's Thesis published by University of Helsinki, Department of Computer
+    Science.
 }
 
 \newtheorem{theorem}{Theorem}[chapter]
@@ -234,6 +231,37 @@
 \frontmatter
 
 \maketitle
+
+\begin{abstract}
+
+Internet is nowadays being used as a platform for providing a wide variety of
+different services. This has created challenges related to scaling IT
+infrastructure management. Cloud computing is a popular solution for scaling
+infrastructure, either by building a self-hosted cloud or by using cloud
+platform provided by external organizations. This transfers some the challenges
+related to large scale to the cloud administrators.
+
+OpenStack is a group of open-source software projects for running cloud
+platforms. It is the most commonly used software for building private clouds.
+Since initially published by NASA and Rackspace, it has been used by various
+organizations such as Walmart, China Mobile and Cern nuclear research
+institute. Largest production deployments of OpenStack clouds consist of
+thousands of physical server computers located in multiple datacenters.
+
+OpenStack community has created many deployment methods that take advantage of
+automated software configuration management. Methods are built with state of
+the art software for automating different administrative tasks. Deployment
+methods take different approaches to automating infrastructure management for
+OpenStack.
+
+This paper compares some of the automated deployment methods being used and
+reflects on some of the benefits of using automation for configuration
+management. Comparisons are based on technical documentation and reference
+literature. A questionnaire related to the use of automation was conducted for
+OpenStack administrators. Lastly, one of the deployment methods was tested in a
+virtualized environment.
+
+\end{abstract}
 
 \tableofcontents
 
