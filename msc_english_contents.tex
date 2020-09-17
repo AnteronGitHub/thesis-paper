@@ -4,79 +4,123 @@ As providing services over the Internet has become a common practice in the
 modern society, maintenance of information systems has encountered many
 challenges as well. While web-based applications have become more diverse,
 resource-intensive, and complicated, they face higher expectations with respect
-to usability, performance and security.
+to usability, performance and security. Artificial intelligence and machine
+learning are being utilized in developed software
+\cite{softwareengineeringfor-machine-learning}, more ways to improve page load
+time are still being developed \cite{pageloadtimes}, and in the year 2018
+Google reported 81 of the top 100 web sites using HTTPS by default
+\cite{secure-web}. Often times industrial software development has strict
+deadlines to follow. Many IT organizations aim to be agile and build their
+development practices around the idea of constant service improvement. It means
+that a software product is rarely considered finished but instead new features
+are being added to it and flaws are being fixed in a priority order. DevOps is
+a development philosophy that advocates small and frequent updates
+\cite{wiedemann2019devops}. As a result, programs and sometimes entire system
+architectures may be updated more or less regularly. Similarly to IT services
+themselves automating repetitive tasks in hopes of achieving reliability and
+cost-effectiveness, software development processes aim to utilize automation
+whenever feasible.
 
-Often times industrial software development has strict deadlines to follow.
-Many development practices are built around the idea of constant service
-improvement. It means that a software product is rarely considered finished but
-instead new features are being added to it and flaws being fixed in a priority
-order.
-
-As a result, programs and sometimes entire system architectures tend to require
-frequent updates. Similarly to IT services automating repetitive tasks in hopes
-of achieving reliability and cost-effectiveness, software development processes
-aim to utilize automation whenever feasible.
-
-Cloud enviroments offer on-demand computing resources for cloud consumers. When
-deploying to cloud, a user can expect customized servers being provisioned
-within seconds. It can be achieved with a combination of hypervisors and
-programs preinstalled in virtual machines for instance. For further
-configurations, additional software automation tools can be used.
-
-Cloud environments are formed by physical host machines that lease virtualized
-devices such as virtual CPUs (vCPU), logical volumes, or virtual network
-devices. Users get typically charged for the time that they use some of these
-resources. Servers can quickly be set up and down, preventing users from
-having to pay for under-utilized servers.
-
-For server provisioning, cloud providers do not typically have the same
-luxuries as cloud users, since using virtualization is not optimal due to added
-processing overhead. However when it comes to configuring hundreds or even
-thousands of physical server computers, automation is once again seen as a
+Cloud enviroments offer on-demand computing resources for cloud consumers
+\cite{armbrust2010view}. When deploying to a cloud, a user can expect
+customized servers being provisioned within seconds. It can be achieved with a
+combination of hypervisors and preinstalled software in virtual machines for
+instance. For further configurations, additional software automation tools can
+be used. Cloud environments are formed by physical host machines that lease
+virtualized devices such as virtual CPUs (vCPU), logical volumes, or virtual
+network devices. Users get typically charged for the time that they use some of
+these resources. Resources in a cloud environment can quickly be set up and
+down, preventing the users from having to pay for under-utilized servers. In
+terms of server provisioning, the cloud providers do not typically have the
+same luxuries as cloud users, since using virtualization is not optimal due to
+the added processing overhead. However when it comes to configuring hundreds or
+even thousands of physical server computers, automation is once again seen as a
 potential solution. Yet many traditional cloud administrators are still relying
 on manual maintenance operations.
 
 This thesis explores different popular methods for deploying and administering
-cloud environments with help of software automation. Selected automation tools
-and de facto methods for using them are compared. Questions \ref{fig:rqs} are
-reflected during evaluation.
+cloud environments with the help of software automation. The deployed software
+is a combination OpenStack services. OpenStack \cite{sefraoui2012openstack} is
+a collective of open-source software projects for running cloud servers. It is
+currently the most widely used project for creating private clouds. It includes
+official repositories for various automated deployment methods. Most of the
+methods provide a basis on which to build a solution customized for own working
+environment.
 
-Deployed software is a combination OpenStack services. OpenStack is a
-collective of open-source software projects for running cloud servers.
-OpenStack is the most widely used plaftorm for creating private clouds. It
-includes official repositories for various automated deployment methods. Most
-of the methods provide a basis on which to build a solution customized for own
-working environment.
+We organize this thesis followingly. In Chapter \ref{state-of-the-art} we
+present the motivation to the topic and introduce some core concepts and
+technologies. Sections \ref{cloud-computing} and
+\ref{software-configuration-management} will provide short introductions to
+some of the popular software solutions. In Chapter \ref{deployment} we will
+present some of the official deployment methods for OpenStack. In these two
+chapters we will provide answers to research questions RQ1 and RQ2 shown on
+Figure \ref{fig:rqs}. We will provide reasoning to the answers based on
+technical documentation and reference literature. In Chapter
+\ref{questionnaire} we present results from a small-scale survey we conducted
+for OpenStack administrators. Questionnaire discussed the use of automation for
+administering OpenStack deployments. In Chapter \ref{evaluation} we present a
+test deployment conducted with one of the automated deployment methods. These
+two Chapters will provide answers to research question RQ3 about the benefits
+of automated configuration management. Answers will be based on custom
+experience gained in method evaluation as well as experience of professional
+OpenStack administrators. In order to avoid bias, we will compare results from
+both the questionnaire and evaluation to larger datasets such as OpenStack user
+surveys \cite{openstack-user-survey-2018}.
+
+This thesis provides two major contributions. Firstly we present a view of the
+contemporary methods for using automation in managing a deployment of a complex
+distributed system, more particularly an OpenStack cloud. Secondly we will
+outline benefits of using and developing automation tools based on experiences
+gained from real-world operations as well as empirical study. We will see that
+with a wide variety of different options available, some of the deployment
+methods may be more suited for specific use purposes than others. Awareness of
+the differences in the design of the deployment methods can help to make a
+decision about the tool that will be adapted for a particular project. Some of
+the tools provide more features than others. Using a sophisticated deployment
+method which requires high maintenance might not be the best solution in case
+most of the provided features go unused. As both the use and the development of
+the automated solutions requires constant effort, the benefit of automation is
+not always obvious either. The primary benefit of using automation is the
+reliability it provides for repating administrative tasks. Repeatable
+operations enable the use of frequent updates to IT services with decreased
+risk of human error resulting from manual operations.
 
 \begin{figure}[t]
 \centering
 \begin{itemize}
   \item [RQ1] What are the key factors affecting the design of different
-              deployment methods, and how do they differentiate from each
-              other?
-  \item [RQ2] What kind of features do different deployment methods offer?
+              deployment methods, and how do the deployment method
+              differentiate from each other?
+  \item [RQ2] What kind of features do the different deployment methods offer?
               Which components are used in deployments?
-  \item [RQ3] Who will benefit from the development of software automation
+  \item [RQ3] Who will benefit from the development of the software automation
               tools, and why?
 \end{itemize}
 \caption{Research Questions}
 \label{fig:rqs}
 \end{figure}
 
-\chapter{State Of The Art}
+\chapter{State Of The Art} \label{state-of-the-art}
 
-This thesis is motivated by current trends and contemporary practices used for
-administering IT infrastructures. Cloud computing has reached nearly a de facto
-status for large scale infrastructure provisioning. While cloud services
+This thesis is motivated by the current trends and contemporary practices used
+for administering IT infrastructures. We will shortly introduce some of these
+trends next. Cloud computing has reached nearly a de facto status for large
+scale infrastructure provisioning \cite{armbrust2010view}. While cloud services
 automate many administrative tasks, another increasingly utilized method in IT
 service management is the use of software automation for system configurations.
-
 Usually whenever there is a trend or a commonly followed practice in the field
 of computer science, there are various approaches taken to achieve it.
 Different approaches may share similarities in some aspects while at the same
-time they can be fundamentally different in other aspects. One of the reasons
-for the existence of various alternative solutions can be commercial
-competition, another can bedifferent preferences for software architectures.
+time they can be fundamentally different in other aspects. As an example,
+virtualizing software runtime environment can be achieved by using fully
+virtualized operating systems with hypervisor like VMware ESX, paravirtualized
+operating systems with hypervisor such as Xen \cite{barham2003xen},
+container-based virtualization \cite{soltesz2007container-based}, or an
+application-level virtual machine such as Java Virtual Machine. All of these
+solutions share the same end goal: to provide runtime isolation for
+applications running on the same physical host machine. One of the reasons for
+the existence of various alternative solutions can be commercial competition,
+another can be different preferences in terms of software architectures.
 
 There is a lot of diversity when it comes to the use of software solutions for
 IT service management. However for the most parts IT services themselves have
@@ -84,37 +128,58 @@ similar requirements related to the quality of service. Services have
 requirements such as highly availability, reliability, efficiency, usability,
 and security. At the same time service management needs to be cost-efficient.
 When it comes to providing high quality with low cost, proper use of automated
-solutions may prove to be valuable.
-
-With successful Internet based services, scale makes a big difference. Spikes
-in the number of active users can affect the quality of service significantly,
-even to the point where the service is unusable. At the same time, having
+solutions may prove to be valuable. With successful Internet based services,
+scale makes a big difference. Spikes in the number of active users can affect
+the quality of service significantly, even to the point where the service is
+unusable. While optimized software has an impact on service level, there is a
+point after which the only way to keep the quality of service high against
+heavy loads is to increase the computing capacity. At the same time, having
 under-utilized servers wastes resources and thus increases the cost of
 providing service, resulting in competitive disadvantage in the market. This
 must be considered both in the design of the application software and in the
-infrastructure architecture.
+infrastructure architecture. Number of users for a web-based application can
+change a lot during the course of a regular business day. Many services have
+repeating patterns in their level of usage and the number of users for a
+particular time of day can be predicted with high accuracy. If usage level has
+drastic changes and follows a repeating pattern, provisioned computing
+resources can be scaled correspondinly resulting in cost savings for optimized
+resource utilization. With the help of detailed analysis and the use of cloud
+platforms, this can be achieved.
 
-Number of users for a web-based application can change a lot during the course
-of a regular business day. Many services have repeating patterns in their
-level of usage and the number of users for a particular time of day can be
-predicted with high accuracy. If usage level has drastic changes and follows a
-repeating pattern, provisioned computing resources can be scaled correspondinly
-resulting in cost savings for optimized resource utilization. With the help of
-detailed analysis and the use of cloud platforms, this can be achieved.
+When maintaining an IT service, many administrative tasks become frequent. When
+scaling system up, deployed applications need to be installed, configured and
+integrated to the environment. When scaling down, it has to be ensured that no
+applications are requesting inexistent application instances. At basic level,
+these operations include software package installations, configuration file
+modifications, and potentially secret management. When done manually these
+tasks have a high risk of failure due to human error. According to a study,
+more than 21\% of IT service interruptions were caused by human error
+\cite{shwartz2010quality}. Another study stated that most of the incidents
+investigated were related to change planning \cite{saarelainen2015quality}.
+These studies suggest that even when infrastructure is not scaled rapidly,
+there is a high pressure towards IT administrators for keeping up the quality
+of service. Partial automation has been suggested as one of the approaches for
+avoiding human error it IT service management \cite{shwartz2010quality}. Still
+many IT administrators are relying on manual operations.
 
-When scaling infrastructure, many administrative tasks become repetitive. When
-scaling up, deployed applications need to be configured and integrated to
-environment. When scaling down, it has to be ensured that no application is
-requesting removed application instances. When done manually these tasks have a
-high risk of failure due to human error to the point where they cannot be
-expected to be frequently without this adding a lot of costs.
-
-Even when infrastructure is not scaled rapidly, there are repeating
-administrative tasks, such as software updates and hardware maintentance
-operations. Having to assure service operations during maintenance suffers the
-same risk of human error, when relying on manual operations. Still this is a
-practice for many administrators and may even limit the potential of the
-provided IT service.
+Another recent trend in IT service management is the DevOps movement
+\cite{wiedemann2019devops}. The term DevOps is often used to describe a
+principle of speeding up development by simplifying the process of publishing
+new software versions while assuring high quality. By using efficient
+development processes and automated tools, the time it takes to deploy a new
+software version to runtime environment or package distribution can be cut,
+lowering the overall cost of IT development. DevOps movement was motivated by
+agile software development principles and the realization that communication
+between software developers and operators often times ended up being an
+unnecessary bottleneck for project speed \cite{ebert2016devops}. Some of the
+goals of DevOps movement, such as fast and automated software release process,
+can be achieved with a proper use of cloud platforms and software configuration
+management tools. They allow application developers to define the deployment
+process either completely or partially with input files for computer programs.
+Deployment is executed by running the programs as opposed to manually following
+application specific instructions. Use of automation can potentially avoid some
+of the errors resulting from miscommunication between developers and operators
+\cite{ebert2016devops}.
 
 Cloud computing can be used for provisioning computing resources rapidly. For
 customized applications, additional configuration is often necessary. Software
@@ -122,97 +187,75 @@ configuration management is a potential solution for avoiding human error in
 repetitive configuration tasks as it enables these configurations to be applied
 programmatically. While providing operational reliability, it has additional
 benefits such as fast execution, and documentation value provided formally
-defined configuration tasks.
+defined configuration tasks. This chapter provides a short introduction to the
+concepts behind cloud computing and software confuration management. We will
+introduce some contemporary software solutions for these concepts and provide
+answers to research question RQ1 (Figure \ref{fig:rqs}) about the design
+factors and differences of the methods. Key design principles and differences
+of the tools are presented as they will affect any deployment methods presented
+in Chapter \ref{deployment}.
 
-Another recent trend in IT service management is the DevOps movement. The term
-DevOps is often used to describe a principle of speeding up development by
-simplifying the process of publishing new software versions. By using efficient
-development processes and automated tools, the time it takes to
-deploy a new software version to runtime environment or package distribution
-can be cut, lowering the overall cost of IT development. DevOps movement was
-motivated by agile software development principles and the realization that
-communication between software developers and operators often times ended up
-being an unnecessary bottleneck for project speed.
-
-Some of the goals of DevOps movement, such as fast and automated software
-release process, can be achieved with a proper use of cloud platforms and
-software configuration management tools. They allow application developers to
-define the deployment process either completely or partially. Deployment is
-executed by running applications as opposed to manually following with
-application specific instructions. Use of automation avoids errors resulting
-from miscommunication between developers and operators.
-
-This chapter provides a short introduction to the concepts behind cloud
-computing and software confuration management. Some contemporary software
-solutions for these concepts. Descriptions aim to provide answers to research
-question RQ1 shown on Figure \ref{fig:rqs}. Key design principles and
-differences of the tools are presented as they will affect any deployment
-methods related to them.
-
-\section{Cloud Computing}
+\section{Cloud Computing} \label{cloud-computing}
 
 For the last decade, cloud computing has been a common paradigm for IT
 infrastructure management. It provides benefits such as high server utilization
-and dynamic scalability with a pay-as-you-go price model for outsourced server
+and dynamic scalability with a pay-per-use price model for outsourced server
 infrastructure. Cloud computing is being widely used in various industrial
-fields, including telecommunication, retail, finance, and scientific research.
-As a result, there is also an inreasing number of public cloud platforms
-available, most notably Amazon Web Services (AWS) \citep{aws}, Microsoft Azure
-\cite{azure}, and Google Cloud Platform (GCP) \cite{gcp}.
-
-As with many practices in the field of computer science, cloud computing lacks
-a universally agreed formal definition. However common to most of the
+fields, including telecommunication \cite{china-mobile}, retail, finance
+\cite{kanso2017enhancing}, and scientific research \cite{bell2015scaling}. As a
+result, there is also an inreasing number of public cloud platforms available,
+most notably Amazon Web Services (AWS) \citep{aws}, Microsoft Azure
+\cite{azure}, and Google Cloud Platform (GCP) \cite{gcp}. As with many
+practices in the field of computer science, cloud computing lacks a universally
+agreed formal definition \cite{armbrust2010view}. However common to most of the
 contemporary cloud platforms is the ability for the end user to provision
 computing resources over HTTP interfaces, mostly by using Restful APIs. This
-makes it possible to automate infrastructure provisioning. Cloud consumer
+makes it possible to provision infrastructure programmatically. Cloud consumer
 avoids the need to request infrastructure operations from administrators, while
-administrators don't have to spend time for repetitive tasks related to
+administrators do not have to spend time for repetitive tasks related to
 infrastructure provisioning.
 
 Due to its on-demand nature, a term often used to describe cloud resource
 provisioning model is \textit{Infrastructure-as-a-Service} (IaaS). It
 emphasizes the fact that infrastructure can be provisioned through a
-well-defined interface. IaaS can be generalized to term
-\textit{Anything-as-a-Service} (XaaS), where anything stands for any resource
-that is provided through programmable interfaces. Whereas in IaaS, the provided
-resources are relatively low-level computing resources, such as servers,
-networks or volumes, in \textit{Software-as-a-Service} model, in addition to
-service provider provisioning infrastructure, it takes care of software
-licencing and configuration.
-
-Reason for varying service models offered by cloud providers, is the fact that
-clients have varying needs in terms of outsourced software solutions. Some
-clients may want an easily adaptable software configuration with no need for
-additional configurations and expertice related to the software; in case of
-issues with the software they are willing to pay for customer support. At the
-same time there are clients who use cloud providers only for leasing
-infrastructure in order to avoid having to maintain own data centers. For the
-first type of client, SaaS may be the right service model, and the latter might
-prefer IaaS.
+well-defined interface. When service provider offers more high-level assets on
+top of which to build applications, the service model is called
+\textit{Platform-as-a-Service} (PaaS). In \textit{Software-as-a-Service} (SaaS)
+model, in addition to service provider provisioning infrastructure, it takes
+care of software licencing and configuration \cite{sefraoui2012openstack}.
+These models can be generalized to \textit{Anything-as-a-Service} (XaaS), where
+anything stands for any resource that is provided through programmable
+interfaces. Reason for varying service models offered by cloud providers, is
+the fact that clients have varying needs in terms of outsourced software
+solutions. Some clients may want an easily adaptable software configuration
+with no need for additional configurations and expertice related to the
+software; in case of issues with the software they are willing to pay for
+customer support. At the same time there are clients who use cloud providers
+only for leasing infrastructure in order to avoid having to maintain own
+datacenters. For the former type of client, SaaS may be the right service
+model, and the latter might prefer IaaS or PaaS.
 
 When it comes to providing XaaS model services, cloud service providers have
 advantages for making new products. As they know their cloud platform in
 detail, they are able to produce optimized solutions for particular use cases.
 They also have full access to their platform, making it possible to avoid any
 workaround solutions that may arise from having to tailor solutions to
-interfaces provided by other services.
-
-Reasons why some clients may still prefer to configure software being hosted on
-cloud platforms themselves, are saves in costs, and the ability to tailor
-solutions to their particular needs. XaaS products have to be generalized
-enough so that they can be used by a large customer base. The more a product is
-generalized, the less it can be directly adapted to a particular use case.
-There are different approaches to dealing with this dilemma, such as
-configuration options or large catalogs of tailored services.
+interfaces provided by other services. Reasons why some clients may still
+prefer to configure software being hosted on cloud platforms themselves, are
+saves in costs, and the ability to tailor solutions to their particular needs.
+XaaS products have to be generalized enough so that they can be used by a large
+customer base. The more a product is generalized, the less it can be directly
+adapted to a particular use case. There are different approaches to dealing
+with this dilemma, such as configuration options or large catalogs of tailored
+services.
 
 Another characteristic in cloud environments is seemingly limitless resources
 available on-demand, enabling the infrastructure to be scaled rapidly based on
-current usage. As cloud platforms can be used for various computational tasks,
-investing in large data centers is more reliable for cloud providers than for
-any particular industrial field practicioner.
-
-With more computing resources available, and the ability to provision them for
-an execution of a particular computational task with no extra cost, some cloud
+current usage \cite{armbrust2010view}. As cloud platforms can be used for
+various computational tasks, investing in large data centers is more reliable
+for cloud providers than for any particular industrial field practicioner. With
+more computing resources available, and the ability to provision them for an
+execution of a particular computational task with no extra cost, some cloud
 consumers may use the platform to lease many vCPU hours for a short period of
 time, instead of using less vCPU hours for a longer period of time. This way of
 using cloud platform is more typical with computational applications such as
@@ -234,7 +277,7 @@ computations horizontally by the runtime system.
 Although cloud platforms primarily provide scalability horizontally with a
 number of provisioned instances, some of the larger cloud platforms provide
 also instance flavors with highly performant computing hardware. These flavors
-may be provided for bare metal services to reduce computational overhead of
+may be provided for bare-metal services to reduce computational overhead of
 virtualization. While vertical scaling is not a feature distinct to cloud
 platforms, they benefit from the high user base. This way while the platform
 grows, as more varying computing flavors are being provided, computers with
@@ -246,39 +289,58 @@ services do not functionally differ from one another, private cloud services
 are restricted to particular end users and public cloud services are offered
 more or less without restrictions. As a result, generally public cloud
 environments are larger in size, known examples of such environments include
-AWS, Azure and GCP.
+AWS \cite{aws}, Azure \cite{azure} and GCP \cite{gcp}. Some cloud platforms are
+built on top of a number of other cloud platforms. Such architectures are
+called \textit{multi clouds}. Multi clouds may use a particular cloud provider
+for certain types of resources, such as virtual networks to be able to use
+quality wide area network infrastructure. They may also use other cloud
+platforms for provisioning resources that they do not have available at the
+moment.
 
-Some cloud platforms are built on top of a number of other cloud platforms.
-Such architectures are called \textit{multi clouds}. Multi clouds may use a
-particular cloud provider for certain types of resources, such as virtual
-networks to be able to use quality wide area network infrastructure. They may
-also use other cloud platforms for provisioning resources that they do not have
-available at the moment.
+Motivation and defining characteristics of the cloud computing paradigm affect
+various software solutions built around it. In order to provide an exhaustive
+description of the features and the components related to the deployment
+methods presented later, having fundamental aspects of cloud computing outlined
+is crucial. The topics about cloud computing that we have presented make the
+foundation for the software solutions we present in this thesis. We will next
+introduce software essential to the topic of this thesis work. Firstly we
+present OpenStack, which is the software that will be deployed with the methods
+presented in Chapter \ref{deployment}. We will then present Docker and
+Kubernetes which have recently gained popularity among application developers
+and operators. They can be used for managing applications running in
+containers, thus making easily portable to a cloud environment. Due to their
+recent popularity they have been adapted by the OpenStack community and are
+being used in some of the OpenStack deployment methods.
 
-\subsection{OpenStack}
+\subsection{OpenStack} \label{openstack}
 
-OpenStack \cite{openstack} is the most widely used open-source software for
-building cloud environments. It was originally developed by NASA and Rackspace,
-and published openly in the year 2010. Since then it has been developed by
-various organizations, including Cern nuclear research institute as well as
-individual contributors. It has been battle-proven for a reliable cloud
-operation \cite{forrester}. While OpenStack can be used for public clouds, it
-is most commonly used for private clouds or multi clouds. It is currently being
-also developed to provide support for edge computing infrastructures.
+OpenStack (OS) \cite{sefraoui2012openstack} is a family of open-source software
+projects for building private cloud environments. Compared to other
+alternatives, such as Eucalyptus \cite{eucalyptus} or OpenNebula
+\cite{opennebula}, OpenStack has become the most widely used open-source
+software used for private clouds. It was originally developed by NASA and
+Rackspace, and published openly in the year 2010. Since then it has been
+developed by various organizations, including Cern nuclear research institute
+as well as individual contributors. It has been battle-proven for a reliable
+cloud operation by its large user base \cite{miller2015brief}. While OpenStack
+can be used for public clouds, it is most commonly used for private or multi
+cloud environments. It is currently being also developed to provide support for
+edge computing infrastructures. OpenStack services are not alternatives to
+hypervisors, logical volumes or SDN controllers, but rather they use them for
+providing computing resources through RESTful APIs in a scalable manner.
 
-At its core OpenStack is an example of a IaaS platform. It provides
+At its core OpenStack is an example of an IaaS platform. It provides
 functionality for infrastructure provisioning through various services.
 Infrastructure provisioning is also the primary use case of OpenStack for most
 of its users. Many of the OpenStack services can be extended for providing
-XaaS, such as VPN-as-a-Service or Database-as-a-Service. Some of these
-extensions can be installed as plugins for the appropriate OpenStack services.
-Otherwise any extensions have to be implemented.
-
-In addition to installing OpenStack with low-level open-source projects,
-OpenStack community has an official marketplace for commercial high-level
-OpenStack-based software products. Commercial OpenStack products may provide
-official integration to other platforms, or simplify and provide support for
-the installation of OpenStack.
+XaaS, such as \textit{VPN-as-a-Service} or \textit{Database-as-a-Service}. Some
+of these extensions can be installed as plugins for the appropriate OpenStack
+services. Otherwise any extensions have to be implemented. In addition to
+installing OpenStack with low-level open-source projects, OpenStack community
+has an official marketplace for commercial high-level OpenStack-based software
+products. Commercial OpenStack products may provide official integration to
+other platforms, or simplify and provide support for the installation of
+OpenStack.
 
 OpenStack consists of different services, not all of which are required for an
 operational cloud. OpenStack services may also be used as a part of other
@@ -294,121 +356,161 @@ Management in cloud. Since OpenStack services use it for access control when
 communicating with other services it is the first service to be installed in
 an OpenStack deployment.
 
-An essential resource in any computing environment is the actual computing
+An essential resource in any computing environment are the actual computing
 units. Traditionally OpenStack has provided computing resources by using
-hypervisors, such as ESXI or KVM/QEMU. OpenStack compute service is called
-Nova and it was one of the first services developed. Nova receives requests
-that describe the specifications for needed virtual machines. Nova then
-schedules the creation of the virtual machine from the hypervisor.
+hypervisors, such as ESX or KVM/QEMU. OpenStack compute service is called Nova
+and it was one of the first services developed. Nova receives requests that
+describe the specifications for needed virtual machines. Nova then schedules
+the creation of the virtual machine from the hypervisor. Virtual machine images
+used by Nova are provided by Glance. Typically guest operating system images
+are built by cloud administrator by using tools such as Diskimage-builder 
+developed by the OpenStack community. Additionally users can create virtual
+machine images from their active Nova server instances.
 
 In order to access virtual machines created by Nova, network access is
 required. Virtual network devices are used for on-demand network provisioning.
 Originally virtual networks were provided by Nova service, but currenlty there
 is a specific OpenStack service, called Neutron, that is responsible for
 network provisioning. Even though nova-network is considered legacy, older
-OpenStack deployments are still using it as they have not been updated to
-support Neutron. As an example, Cern which has been a long-time OpenStack user,
-is still using nova-network in its deployment.
+OpenStack deployments may have been using it long after Neutron was published.
+As an example, Cern which has been a long-time OpenStack user, reported still
+using nova-network in its deployment in the year 2015 \cite{bell2015scaling}.
 
-Virtual machine images used by Nova are provided by Glance. Typically guest
-operating system images are built by cloud administrator by using tools such as
-disk-image-builder. However users are able to create virtual machine images
-from their active Nova server instances.
-
-OpenStack has a few services for persisting guest data. Service providing block
-storage is Cinder. It provides mountable logical volumes for guest instances.
-When instance is terminated, data stored in the volume will persist. Another
-available service for persistent data is Swift object storage. It processes
-stored data using object model. Lastly Manila is an OpenStack service that
-provides shared file system.
+OpenStack has multiple alternatives for persisting guest data. Service
+providing block storage is Cinder. It provides mountable logical volumes for
+guest instances. When instance is terminated, data stored in the volume will
+persist. Another available service for persistent data is Swift object storage.
+It processes stored data using object model. Lastly Manila is an OpenStack
+service that provides shared file system.
 
 There are some OpenStack services that are not required for a functional cloud,
-but are almost always included in cloud deployment. One such service is
-Horizon, a web UI for managing cloud projects. Users can login to it with their
-credentials and do most of the operations available through other OpenStack
-services.
+but are almost always included in a cloud deployment. One of such services is
+Horizon, a web UI for managing cloud tenants. Users can login to it with their
+user credentials and do most of the operations available through other
+OpenStack services. Another optional but commonly deployed OpenStack service is
+Heat orchestration engine. Heat takes a stack template file as an input and
+creates the resources described in the file. This makes instantiating complex
+cloud stacks quick and repeatable. In addition to creation, Heat has
+functionality for updating deployed stacks based on changes made to its
+template file. Heat provides a service similar to that of CloudFormation on AWS
+and it supports its syntax. Ability to create system infrastructures with input
+files that are parsed by computer programs is sometimes referred to as
+\textit{Infrastructure-as-Code} (IaC).
 
-Another optional but commonly deployed OpenStack service is Heat orchestration
-engine. Heat takes a stack template file as an input and creates the resources
-described in the file. This makes instansiating complex cloud stacks quick and
-repeatable. In addition to creation, Heat has functionality for updating
-deployed stacks based on changes made to its template file. Heat provides a
-service similar to that of CloudFormation on AWS and it actually supports its
-syntax. Ability to create system infrastructures with input files that are
-parsed by computer programs is sometimes referred to as
-\textit{Infrastructure-as-a-Code} (IaaC).
+Figure \ref{fig:openstack-services-component} illustrates interrelations of
+different core OpenStack services in an example logical architecture. Services
+communicate with HTTP requests through RESTful API servers. In addition to
+services being requested by core services included in the diagram, they may
+receive requests from other services, such as Horizon, or Heat. They may also
+be directly requested by end users. The component diagram in Figure
+\ref{fig:openstack-services-component} displays the high-level functions of
+different services. There are many different ways OpenStack clouds can be
+designed. For instance Cinder does not have to be used as a storage service
+for machine images hosted by Glance, but other solutions such as Swift object
+storage can be used instead.
+
+\begin{figure}[t]
+\centering
+
+\begin{tikzpicture}
+
+\umlbasiccomponent[y=2.5]{Nova}
+\umlbasiccomponent[x=5]{Neutron}
+\umlbasiccomponent[x=11,y=1]{Keystone}
+\umlbasiccomponent[x=5,y=-2.5]{Glance}
+\umlbasiccomponent[x=7.9,y=-5]{Cinder}
+
+\umlVHassemblyconnector[interface=Plug,last arm]{Nova}{Neutron}
+\umlHVHassemblyconnector[interface=Auth,arm2=-1.7cm,last arm]{Nova}{Keystone}
+\umlVHassemblyconnector[interface=Images]{Nova}{Glance}
+\umlVHassemblyconnector{Nova}{Cinder}
+
+\umlHVHassemblyconnector[arm2=-1.7cm]{Neutron}{Keystone}
+
+\umlHVHassemblyconnector[first arm]{Glance}{Keystone}
+\umlVHassemblyconnector[interface=Store]{Glance}{Cinder}
+
+\umlVHassemblyconnector[arm2=1cm]{Cinder}{Keystone}
+
+\umlnote[x=3.5,y=5]{Plug-interface}{Plug virtual machine instances to networks}
+\umlnote[x=9,y=5]{Auth-interface}{Authenticate and authorize requests}
+\umlnote[x=-2,y=-3]{Images-interface}{Provide virtual machine images for
+                                      instances}
+\umlnote[x=11,y=-2]{Store-interface}{Provide volumes for instances and storage
+                                     for virtual machine images}
+
+\end{tikzpicture}
+
+\caption{Component diagram of core OpenStack services in an example architecture}
+\label{fig:openstack-services-component}
+\end{figure}
 
 OpenStack deployments used for providing cloud services have to be designed
-properly. Quality requirements related to availability, efficiency, security,
-and any potential service level agreements have to be taken into consideration
-when designing a cloud. Since cloud networking is more complicated than regular
-data center networking, decent knowledge of the underlying technologies have to
-be assured for both the designers and the administrators.
-
-OpenStack Deployments typically include host machines of a few different
-flavor. Typically host machines are classified to compute, storage, networking,
-and controller nodes. Each of the node types includes only OpenStack services
-that are used for corresponding functionality. Appropriate hardware based on
-its use purpose should be installed on a node machine. Node  classification may
-be different and miss miss some types or include other types depending on the
-use case of the cloud. Host flavors have an important role when designing a
-cloud architecture as it affects the cloud performance, power consumption and
-overall cost.
+according to the needs of the service. Quality requirements related to
+availability, efficiency, security, and any potential Service Level Agreements
+have to be taken into consideration when designing a cloud. Since cloud
+networking is more complicated than regular data center networking, decent
+knowledge of the underlying technologies like software defined networking have
+to be assured for both the designers and the operators. OpenStack Deployments
+typically include host machines of a few different flavors. Host machines may
+be classified as compute, storage, networking, and controller nodes. Each of
+the node types includes only OpenStack services or the infrastructure services
+that are used for its core purposes. Appropriate hardware to support its use
+purpose should be installed on a node machine. Nodes may be classified
+differently depending on the use case of the cloud. Host flavors have an
+important role when designing a cloud architecture as they have a big impact on
+the cloud performance, power consumption and overall cost.
 
 Compute nodes are used for housing guest virtual machines. They provide guests
 with CPU cores, RAM, root file system, and network access. The more CPU cores,
 and RAM the node has the more guests it can run simultaneously. It is possible
 to overcommit vCPUs with a defined ratio. Overcommitting increases the capacity
 of CPU cores with a tradeoff efficiency in guests. For a compute node in a
-production deployment having 16 CPU cores would be a feasible amount.
-
-Compute nodes should have available RAM in a proportionally to available cores.
-Guest instances are created from instance flavors that specify their resource
-use. Flavors in the deployed cloud can provide guidelines to the compute node
+production deployment having 16 CPU cores would be a feasible amount. Compute
+nodes should have available RAM in a proportionally to available cores. Guest
+instances are created from instance flavors that specify their resource use.
+Flavors in the deployed cloud can provide guidelines to the compute node
 hardware specifications.
 
 Guest root volumes may be housed in shared file system in a network or in a
-node, or they may be provided by directly mounting on the compute node file
-system. In case the compute node file system is being mounted directly, compute
-nodes need to have available volume capacity when creating new guest instances.
-While using network volumes for guest root volumes may provide better volume
-utilization, it suffers from slower read and write operations. Other options
-related to volume provisioning is the device technology such as choice between
-tape or SSD storage.
-
-Storage nodes provide data persistence in the cloud. There are various
-alternative backends for distributed storage accross nodes, such as Ceph,
-GlusterFS and NFS. Hardware used for storage nodes should be oriented in volume
-devices.
+node, or they may be provided by directly mounting a storage device on the
+compute node's file system. In case the compute node file system is being
+mounted directly, compute nodes need to have available volume capacity when
+creating new guest instances. While using network volumes for guest root
+volumes may provide better capacity utilization, it suffers from slower read
+and write operations. Other options related to volume provisioning is the
+device technology such as choice between tape or SSD storage. Storage nodes
+provide data persistence in the cloud. There are various alternative backends
+for distributed storage across nodes, such as Ceph, GlusterFS or NFS. Volume
+devices are naturally the most crucial hardware for storage nodes.
 
 \subsection{Docker}
 
-Docker \cite{docker} is a software for managing containerized applications.
-Containers provide process isolation by using Linux Kernel cgroup \cite{cgroup}
-functionality. Use of containers simplifies management of multiple
-microservices but adds overhead and security considerations.
-
-Docker containers use Docker Engine to communicate directly with host operating
-system kernel. This makes containers more lightweight than virtual machines run
-by hypervisors since kernel functionality does not have to be emulated by the
-hypervisor.
+Docker \cite{bernstein2014containers} is a software for managing containerized
+applications. Containers provide process isolation by using Linux Kernel
+CGroup \cite{cgroup} functionality. Use of containers simplifies management of
+multiple microservices on same host machines. It adds overhead compared to
+regular process isolation, but is more efficient than using hypervisors
+\cite{soltesz2007container-based}. Docker containers use Docker Engine to
+communicate directly with host operating system kernel. This keeps containers
+lightweight since the kernel functionality does not have to be emulated by the
+hypervisor. Podman \cite{podman} is a daemonless alternative to Docker.
 
 In addition to providing runtime isolation for application processes, Docker
 includes functionality for creating container images. Images can be created
-from existing containers or based on files describing image configuration
+from existing containers or based on files describing container configuration
 tasks. Created images can be published to Docker \textit{registries}, which can
 be public or private. DockerHub is a public container registry which houses
-official Docker images, and is also available for other publishers.
-
-Docker's image build system is sophisticated and provides multi-layered caching
-for created images. Image is cached after distinct operations in the creation
+official Docker images, and is also available for other publishers. Docker's
+image build system is sophisticated and provides multi-layered caching for
+created images. Image is cached after distinct operations in the creation
 process. By running configurations in the proper order only a subset of them
-have to be repeated when image is modified and re-created. For instance by
+have to be repeated when image is modified and rebuilt. As an example, by
 updating base image package manager as the first configuration operation and
 installing application dependencies later, updated package manager can be used
 if application dependencies need to be reinstalled.
 
-Docker also includes functionality for managing resources other than container.
+Docker also includes functionality for managing other resources than container.
 Docker Engine can provision volumes for persisting data and networks for
 container connectivity. There are different drivers for volumes and networks.
 Simplest drivers simply bind resources directly to Docker host. For scaling
@@ -419,131 +521,127 @@ using layer 2 semantics.
 One of the reasons for Docker becoming popular among software developers is how
 it simplifies container creation and sharing container images. Since container
 are portable to other hosts running Docker Engine, applications can be deployed
-easily, while having any software dependencies included in built images makes
+easily, while having any software dependencies included in images makes
 deployment quicker and more reliable. Lightweight container lifecycle also
-enables containers to be recreated as a method of disaster recovery.
-
-Docker's benefits for application deployment are ideal for teams adapting
-DevOps principles. Not only do image registries provide an interface between
-developer and operator teams, they make development environment configuration
-simple enough to be appealing for application developers. Continuous deployment
-pipelines benefit from Docker's build system.
+enables containers to be recreated as a method of disaster recovery. Docker's
+benefits for application deployment are ideal for teams adapting DevOps
+principles. Not only do image registries provide an interface between developer
+and operator teams, they also make development environment configuration simple
+enough to be appealing for application developers. Continuous deployment
+pipelines can use from Docker registries similarly how they would use software
+package repositories.
 
 By installing all the used software into containers, developer can keep the
 host operating system environment uncluttered. Uninstalling software and its
-files is simply done by removing the container.
-
-Similarly to application developers benefitting from uncluttered host system,
-operators running applications in containers do not have to worry about
-cleaning thrash when updating outdated software versions. Containers provide
-logistics for managing software that updates frequently. Running various
-applications on a single host becomes also less complicated with containers.
+files is simply done by removing the container. Similarly to application
+developers benefitting from uncluttered host system, operators running
+applications in containers do not have to worry about cleaning trash when
+updating outdated software versions. Containers provide logistics for managing
+software that updates frequently. Managing multiple microservices running on a
+single host becomes less error-prone with isolation provided by containers.
 
 \subsection{Kubernetes}
 
-Kubernetes \cite{kubernetes} is a software for managing Docker container
-clusters. It was developed by Google which has been running applications in LXC
+Kubernetes \cite{burns2016borg} is a software for managing Docker container
+clusters. It was developed by Google which has been running applications in
 containers long before Docker became popular. Kubernetes is intended for
 providing highly available production environments by running Docker container.
-Due to container overlay networks it can be used for both centralized cloud
-platforms, and de-centralised edge infrastructures.
+It provides a RESTful API for cluster management. Due to container overlay
+networks it can be used for both centralized cloud platforms, and
+de-centralised edge computing infrastructures. Applications can be deployed to
+a Kubernetes cluster based on YAML formatted definitions. Additionally
+Kubernetes includes a package manager called Helm  which can be used to bundle
+more complex applications into templates called charts. While applications can
+be deployed in a Kubernetes cluster without Helm packages, having Helm charts
+helps to bundle applications.
 
-Kubernetes uses Helm package manager to deploy applications from templates
-called charts. While applications can be deployed in a Kubernetes cluster
-without Helm packages, having Helm charts helps to bundle applications.
-
-Kubernetes consists of api server, scheduler, cluster controller and worker
+Kubernetes consists of API server, scheduler, cluster controller and worker
 nodes. Clusters may provision resources from cloud providers by using separate
 cloud controller process. In order to optimize Kubernetes cluster runtime for
-production environments, baremetal Kubernetes clusters may be run. In this case
-cloud controller is not necessary.
-
-Kubernetes uses Docker Engine for managing containers. It can scale application
-deployments by creating and deleting containers, and it provides health
-monitoring and is capable of automatically recreating containers that have
-entered failed state.
-
-Other infrastructure can also be managed by Kubernetes. It manages firewall
-rules within networks, and provides ingress to application containers through
-reverse proxy.
+production environments, bare-metal Kubernetes clusters may be run. In this
+case cloud controller is not necessary. Kubernetes uses Docker Engine for
+managing applications running in containers. It can scale application
+deployments by creating and deleting containers. It also provides health
+monitoring for deployed applications and can automatically recreate containers
+that have entered failed state. Other infrastructure resources can also be
+managed by Kubernetes. It manages firewall rules within networks, and provides
+ingress to application containers through reverse proxy.
 
 Kubernetes is specifically useful for developers since application stacks can
-be created faster than virtual machines. For administrators Kubernetes provides
+be created faster than with hypervisors. For administrators Kubernetes provides
 functionality for deploying, updating and scaling applications. As a tradeoff,
 having to install and operate Kubernetes cluster adds overhead to maintaining
-applications.
-
-There are commercial Kubernetes services, that offer configured clusters for
-application developers. This makes it easy to operate scalable web-based
-applications without the need to administer or configure host systems, which is
-favourable for teams consisting only of software developers. On the other hand
-administers may provide hosted Kubernetes clusters as a service.
+applications. There are commercial Kubernetes services, that offer configured
+clusters for application developers. This makes it easy to operate scalable
+web-based applications without the need to administer or configure host
+systems, which is favourable for teams consisting only of software developers.
+On the other hand administrators can provide hosted Kubernetes clusters as a
+service. Kubernetes provides an interface between software developers and
+administrators in a similiar manner than cloud platforms, by providing a
+RESTful API.
 
 OpenStack includes a service called Magnum, which can be used for providing
 Kubernetes clusters as a service. Magnum uses Heat orchestration for
-configuring cluster hosts that are created with Fedora Atomic machine images,
-which include preconfigured Kubernetes software. Similarly to other OpenStack
-services further customizations to Magnum are also possible.
+configuring cluster hosts that are created with Fedora Atomic
+\cite{projectatomic} machine images, which include preconfigured Kubernetes
+software. Similarly to other OpenStack services further customizations to
+Magnum are also possible. In addition to Kubernetes being available to be
+provisioned as a service, there also exists methods to deploy OpenStack
+services into Kubernetes clusters. Since virtualization allows various possible
+stacks to be built from the same components, it may sometimes create confusion.
+How different stacks are built depends on the intended use cases, but for the
+most parts, the more virtualization stack is used, the more overhead is
+created, and thus it should be avoided in production-grade environments.
 
-In addition to Kubernetes being available to be provisioned as a service, there
-also exists methods to deploy OpenStack services into Kubernetes clusters.
-Since virtualization allows various possible stacks to be built from the same
-components, it may sometimes create confusion. How different stacks are built
-depends on the intended use cases, but for the most parts, the more
-virtualization stack is had, the more overhead is created, and thus it should
-be avoided for production-grade environments.
-
-\section{Software Configuration Management}
+\section{Software Configuration Management} \label{software-configuration-management}
 
 Large distributed systems, such as OpenStack deployments, consist of many
 configuration items, such as databases, message queues, proxies, and memory
 caches. Infrastructure services need to be configured according to applications
 using them. As infrastructure services, or the application services, are
-updated, compliancy to other services must also be ensured.
-
-Shell scripting has traditionally been a common way of automating different
-administrative tasks in Linux environment with its counterpart being batch
-scripting in Windows. Recently different software automation tools have become
-a popular replacement for scripting.
+updated, compliancy to other services must also be ensured. Shell scripting has
+traditionally been a common way of automating different administrative tasks in
+Linux environment with its counterpart being batch scripting in Windows.
+Recently different software automation tools have become a popular replacement
+for shell scripting.
 
 Automation tools commontly take an input file that describes operations to be
 executed, and apply it. Input files are often given in declarative format, like
 JSON \cite{json} or YAML \cite{yaml}, as opposed to procedural format of script
-files. The key difference is, that input files describe the desired outcome and
-not the methods of achieving it. How configuration is applied to the targeted
-system is determined by the automation tool implementation. Since the methods
-of configuring the system are for the most part not relevant to administrators,
-using declarative input files simplifies automating software configuration
-management.
+files. The difference between the two is that input files describe the desired
+outcome and not the methods of achieving it. How configuration is applied to
+the targeted system is determined by the automation tool implementation. Since
+the methods of configuring the system are for the most part not relevant to
+administrators, using declarative input files simplifies automating software
+configuration management. Automation tools provide reliability and
+cross-platform support by using application layer modules for software
+configuration tasks. They can abstract operating system dependent
+considerations for common administrative tasks. This also enables
+configurations to be shared more easily among administrators.
 
-Automation tools provide reliability and cross-platform support by using
-application layer modules for software configuration tasks. They can abstract
-operating system dependent considerations for common administrative tasks. This
-also enables configurations to be shared more easily among administrators.
+Typical recommendation when designing automated configuration tasks is to try
+to make the operations idempotent. This means that the automated task can be
+repeated indefinitely without changing its outcome. In other words, if the
+targeted system is in the desired state, applying the configuration does not
+change the target system state. Idempotence can be assured at low level by the
+automation tool, but when making high level configurations, it has to be taken
+into account by the configuration designer. Having idempotent configuration
+tasks makes the use of automation tool more reliable. With complex
+configurations ensuring idempotency may be difficult.
 
-Typical recommendation when designing automated configuration tasks is to aim
-for idempotent operations. This means that the task automated can be repeated
-indefinitely without it changing the outcome. In other words, if the targeted
-system is in the desired state, applying the configuration does not change the
-target system state. Idempotence can be assured at low level by the automation
-tool, but when making high level configurations, it has to be taken into
-account by the configuration designer. Having idempotent configuration tasks
-makes the use of automation tool more reliable.
-
-One crucial difference in the use of software configuration management tools
-and precreated virtual machine or container images, is that configuration
-management tools deal with running configurations, while in created images the
-necessary configurations have already been applied. It is possible to use
-software configuration management tools for creating machine images, but most
-of its usefulness comes from dynamic maintenance operations.
-
-Dynamic configurations provide versatility and the ability to request newest
-package versions over a network during execution. Tradeoff is that the
-configuration takes longer than having preconfigured software available at
-disk. In repeating configuration operations, such as CI/CD pipelines, virtual
-machines containing some of the required software could be useful. Another
-option is to use cache mechanism for installed dependencies. Optimizing build
-time is usually possible in many ways once the pipeline is functional.
+One crucial difference between software configuration management tools and
+prebuilt virtual machine or container images, is that configuration management
+tools are responsible for applying configurations, while machine images contain
+the necessary software and configurations. It is possible to use software
+configuration management tools for creating machine images, but most of its
+usefulness comes from dynamic maintenance operations. Dynamic configurations
+provide versatility and the ability to request newest package versions over a
+network during execution. Tradeoff is that the configuration takes longer than
+having preconfigured software available at disk. For repeating configuration
+operations, such as CI/CD pipelines, virtual machines containing some of the
+required software is likely more beneficial. Another option is to use cache
+mechanism for installed dependencies. Optimizing build time of a functioning
+pipeline is often possible in many different ways.
 
 There is a large number of different software automation tools available. While
 there are differences in the architecture of different software configuration
@@ -551,38 +649,36 @@ management tools, some similarities exist as well. Most of the software
 configuration management tools provide some mechanism for sharing configuration
 methods. This makes it possible to create communities of administrators.
 Similarly to open-source software projects, configuration tool communities
-often times help to develop the tool as well. As with many software projects,
-many configuration management tools depend on active communities in order to
-keep being developed. Some of the more relevant tools for this thesis are
-introduced below in more detail.
+often help to develop the tool as well. As with many software projects,
+configuration management tools depend on active communities in order to keep
+being developed. Some tools that are used in the deployment methods presented
+in Chapter \ref{deployment} are introduced next in more detail.
 
 \subsection{Ansible}
 
-Ansible \cite{ansible} is a software management tool developed by RedHat with
-community contributions. Ansible is an open-source program written in Python.
-Ansible can be run with ad-hoc commands, without written input files, but
+Ansible \cite{ansible} is a software configuration management tool developed by
+RedHat with community contributions. Ansible is an open-source program written
+in Python. It can be run with ad-hoc commands, without written input files, but
 generally it is used with YAML formatted files describing operations to be
-executed.
-
-Use of Ansible is based on establishing SSH connection to target machine and
-running Python modules executing administrative tasks. Hence it does not
-require additional  agent programs installed on target machines, in addition to
-SSH daemon and Python, both of which are available in many basic Linux distro
-installations. Not requiring additional software makes the use of Ansible
+executed. Use of Ansible is based on establishing SSH connection to target
+machine and running Python modules executing administrative tasks. Hence the
+only software requirements on the target machines are SSH daemon and Python
+compiler, both of which are available in basic installations of many mainstream
+Linux distributions. Not requiring additional software makes the use of Ansible
 simple and keeps target machines optimized.
 
 Architecturally Ansible consists of a few concepts that divide the
 responsibility of configuration execution. At lowest level, tasks are executed
 in \textit{modules}, which are Python scripts that generally use standard
 library API's for interacting with host operating system. For the most part the
-modules need not be written when using Ansible, since Ansible standard library
-includes modules for the most common administrative tasks. One of the standard
-modules enables user to execute arbitrary shell commands, avoiding the need to
-write a module for programs that do not have one implemented.
+modules do not need be written when using Ansible, since Ansible standard
+library includes modules for the most common administrative tasks. One of the
+standard modules enables user to execute arbitrary shell commands, avoiding the
+need to write modules for programs that do not have one implemented.
 
 \begin{figure}[t]
 \centering
-\begin{verbatim}
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
 ---
 - name: Copy files to destination
   copy:
@@ -591,61 +687,59 @@ write a module for programs that do not have one implemented.
   with_items:
     - file.txt
     - other_file.txt
-\end{verbatim}
+\end{minted}
 
 \caption{Example Ansible task definition}
 \label{fig:ansible-task}
 \end{figure}
 
-Ansible input files reference modules through units, called \textit{tasks}.
-At minimal, tasks describe the module to be executed and arguments passed to
+Input files of Ansible reference modules via units called \textit{tasks}. In
+essence, tasks describe the module to be executed and arguments passed to
 it. Tasks may include additional metadata, such as descriptive names that are
 displayed during execution. Variables can be used with defined tasks in order
-to make them re-usable. For instance, arguments passed to a module could be
-defined with variables.
-
-Figure \ref{fig:ansible-task} illustrates an example of Ansible task, which
-uses \textit{files} module to copy files from \textit{files} directory to the
-\textit{opt} directory on targeted host. It loops through file names specified
-in \textit{with\_items} list, places the file names in the \textit{item}
-placeholder in the task arguments.
+to make them re-usable. As an example, arguments passed to a module could be
+defined with variables. Figure \ref{fig:ansible-task} illustrates an example of
+Ansible task, which uses \textit{files} module to copy files from
+\textit{files} directory to the \textit{opt} directory on targeted host.
+\textit{src} and \textit{dest} are arguments for the \textit{copy} module.
+\textit{with\_items} keyword specifies a loop that binds listed entries to the
+\textit{item} placeholder.
 
 Complex software configurations consist of many tasks. In order to structure
 templates, Ansible uses \textit{roles}, that describe higher level
 administrative operations. Roles are grouped in directories that follow a
 conventional structure that Ansible expects. In order to roles to make changes
 to target machines, they must include some tasks. Roles cannot be executed
-directly, but rather have to be referenced externally. They are however
-supposed to be kept self-contained, in order to port them easily. For this
-reason roles can define default variable values to be used in tasks.
+directly, but rather have to be referenced externally. They are supposed to be
+kept self-contained, in order to port them easily. Roles can define default
+variable values. Input files that Ansible can execute are called
+\textit{playbooks}. They describe hosts to be targeted, and reference roles to
+be applied or tasks to be executed. Environment specific information, such as
+host IP addresses, and customizable configuration parameters are described in
+\textit{inventories}. Inventories can be built from groups of hosts, and
+variable values can be specified for individual hosts or for host groups.
 
-Input files that Ansible can execute are called \textit{playbooks}. They
-describe hosts to be targeted, and reference roles to be applied or tasks to be
-executed.
-
-Environment specific information, such as host IP addresses, and customizable
-configuration parameters are described in \textit{inventories}. Inventories can
-be built from groups of hosts, and variable values can be specified for
-individual hosts or for host groups.
-
-While Ansible is easy to get started with, and provides modular a method for
-building configuration libraries, it does not provide high-level in-built
-functionality, such as health monitoring or infrastructure provisioning. These
-tasks can be implemented with Ansible, and shared as roles for instance.
+While Ansible is easy to get started with, and it provides a modular method for
+building configuration libraries, it does not provide built-in functionality
+for provisioning infrastructure or health monitoring deployments. One option is
+to implement these tasks with Ansible by leveraging IaaS providers
+\cite{singh2015automated}. In its simplicity Ansible is a powerful tool for
+managing system configurations.
 
 \subsection{Juju}
 
 Juju \cite{juju} is an application modeling tool developed by Canonical. It is
 capable of deploying, configuring and scaling software. Juju was originally
 written it Python, but its current version is implemented with Go programming
-language. It still has an API for Python.
+language. It still has an API for developing modules in Python.
 
-Juju uses a \textit{cloud} abstraction for provisioning infrastructure.
-Out-of-the-box it supports public clouds like AWS, GCP, and Azure, and a number
-of private clouds, including OpenStack. For production deployments, Canonical
-recommends using MAAS \cite{maas}, which can be installed in datacenter for
-provisioning bare metal infrastructure. Juju also supports manual clouds for
-deploying in pre-existing server infrastructure. Manual clouds lack some of the
+Juju uses a \textit{cloud} abstraction for provisioning infrastructure. It
+includes functionality for interacting with public cloud platforms like AWS,
+GCP, and Azure, and a number of private clouds, including OpenStack. For
+production application deployments, Canonical recommends using MAAS
+\cite{sirbu2015maas}, which can be installed in datacenter for provisioning
+bare-metal infrastructure. Juju also supports manual clouds for deploying in
+pre-existing server infrastructure. Manual clouds lack some of the
 functionality available when using other clouds, mainly related to automated
 provisioning.
 
@@ -667,11 +761,10 @@ Juju is especially useful for application developers as it provides a simple
 set of commands for operating application deployment and supports many of the
 common infrastructure providers. Configuration tasks are implemented with
 software modules using software libraries, making it more approachable for
-developers familiar with the tools.
-
-Administrators might find tools that provide declarative input format more
-approachable. In case all of the configurations are provided by application
-developers, Juju could provide an interface between developers and
+developers familiar with the tools. Administrators who do not use Python
+scripts for system configurations might find tools that provide declarative
+input format more approachable. In case all of the configurations are provided
+by application developers, Juju can provide an interface between developers and
 administrators.
 
 \subsection{Puppet}
@@ -688,7 +781,6 @@ Language (DSL)}, which is a declarative coding language. Puppet deployment
 includes a \textit{master server}, which stores desired states in database
 called \textit{PuppetDB}. Agent processes translate Puppet DSL into executable
 commands. Master and agents use HTTPS protocol for communication \cite{puppet}.
-
 Information about target hosts is gathered by agent processes with Puppets
 inventory tool, \textit{Facter}. Gathered data is sent to master server in
 Puppet DSL format in files called \textit{manifests}. Based on received
@@ -701,144 +793,143 @@ data from the code executing configurations by using tool called
 Puppet provides accurate configuration monitoring by using agent processes on
 target hosts. At the same time it includes many configuration items making the
 installation process more complex. Overhead of configuration tool has a
-potential of vendor-lock and means that the tools must provide value worth the
-added work.
+potential of vendor lock-in and means that the tools must provide value worth
+the added work.
+
+\begin{table}
+\centering
+
+\begin{tabular} {r|c c c}
+                            & Ansible & Juju      & Puppet \\
+\hline
+Module compiler             & Python  & Go/Python & Ruby   \\
+Uses agents on targets      & No      & Yes       & Yes    \\
+Provisions infrastructure   & No      & Yes       & No     \\
+Provides health monitoring  & No      & Yes       & Yes    \\
+\end{tabular}
+
+\caption{Key features of the software configuration management tools}
+\end{table}
 
 \chapter{OpenStack Deployment}\label{deployment}
 
+Largest OpenStack deployments consist of thousands of nodes in multiple
+datacenters. In the year 2015 Cern reported 5500 nodes being used across two
+datacenters, running more than 12000 virtual machines \cite{bell2015scaling}.
+World's largest telecommunication company China mobile has published multiple
+scalability tests with OpenStack clusters of 1000 and more nodes
+\cite{china-mobile}. Paypal operates a 4000 host node OpenStack deployment, and
+Walmart invested in an OpenStack cloud consisting of more than 100000 CPU cores
+\cite{kanso2017enhancing}. Various approaches has been taken to cloud
+administration and update process by different organizations. Cern for instance
+has traditionally followed a model where one item is upgraded roughly every two
+weeks \cite{bell2015scaling}, minimizing the impact of potential failures.
+
 Installation of a functional OpenStack cloud includes many steps. Most of the
-OpenStack services use infrastructure services, that will need to be installed,
-and configured for OpenStack services by managing appropriate resources and
-user permissions.
+OpenStack services use infrastructure services, which need to be installed and
+configured. As new versions of OpenStack services are release biannually,
+configuration management is a big part of operating an OpenStack cloud. After
+the initial deployment the services will need to be upgraded, while ensuring
+the cloud operation. In practice the initial deployment is only a small part of
+the OpenStack cloud lifecycle. It is common for the tools used for initial
+deployment to be also used for many of the administrative tasks during the
+cloud operation. For the most parts OpenStack is beneficial for large-scale
+deployments. Many of the infrastructure services are intended to provide
+scalability for the OpenStack services. Using them for small-scale deployments
+adds performance overhead and complexity that does not provide significant
+value. Small-scale datacenters do not benefit from RESTful APIs for
+infrastructure provisioning as much either since their use level is likely to
+be low.
 
-As new versions of OpenStack services are release biannually, configuration
-management is a big part operating an OpenStack cloud. After initial deployment
-services will need to be upgraded, while ensuring cloud operation. In practice
-the initial deployment covers only a small fraction of the OpenStack cloud
-lifecycle. Often times however the tools used for initial deployment are also
-used for many of the administrative tasks during cloud operation.
-
-For the most part, OpenStack is beneficial for large-scale deployments. Many of
-the infrastructure services aim to provide scalability for OpenStack services.
-Using them for small-scale deployments is not beneficial as they consume
-computing resources on hosts. Small scale data centers do not benefit from
-RESTful APIs for infrastructure provisioning as much either.
-
-Largest OpenStack deployments consist of thousands of nodes in datacenter. In
-the year 2015 Cern reported 5500 nodes being used across two datacenters,
-running more than 12000 virtual machines \cite{cern}. World's largest
-telecommunication company China mobile has published multiple scalability tests
-with OpenStack clusters of 1000 and more nodes \cite{china-mobile}. One of the
-world's largest retail companies, Walmart invested in an OpenStack cloud
-consisting of more than 100000 CPU cores \cite{walmart}.
-
-Various approaches has been taken to cloud administration and update process by
-different organizations. Cern for instance has traditionally followed a model
-where one item is upgraded roughly every two weeks \cite{cern}, minimizing the
-impact of potential failures.
-
-Different parts of installation process has been automated as much as possible.
-OpenStack services may be installed with package management tools, such as pip
-for python source installation. Many Linux distributions' package management
-tools, such as apt for Ubuntu and yum for CentOS, have distributions of many
-OpenStack services as well, altough depending on the used repository,
-distribution packages might not be at the latest versions.
-
+Different parts of installation process has been automated as much as possible
+by the OpenStack commuity. OpenStack services may be installed from source with
+pip package management tool for python. Many Linux distributions' package
+management tools, such as apt for Ubuntu and yum for CentOS, have distributions
+of many OpenStack services as well. However depending on the used repository,
+distribution packages might not include the latest versions of the software.
 Software configuration management tools have also been used by OpenStack
 community for some time now. Many of the deployment methods for automation
 tools have official OpenStack repositories. Some deployment methods are also
-designed for particular use cases, such as easy setup of development
-environment or automation testing.
+designed for particular use cases, such as easy setup of a development
+environment or use for automated testing.
 
 \section{Deployment Methods}
 
-OpenStack includes official repositories for many of the popular software
-configuration management tools and some methods developed by the OpenStack
-community. Methods have been developed at different times and for the most part
-they have followed the best practices of the underlying configuration tool
-whenever one is used.
-
-Many deployment methods may have been developed with a particular use case in
-mind. Some methods provide simple setup for an OpenStack development
-environment, while others provide full configurability with minimal assumptions
-of the deployment environment.
-
-Currently many new developers being introduced to OpenStack start with
+OpenStack community has created  official deployment methods with many popular
+software configuration management tools. The methods have been during different
+time periods and they follow the best contemporary practices. Many deployment
+methods may have been developed for a particular use case. Some of the methods
+provide a simple setup for an OpenStack development environment, while others
+provide more configurability with little assumptions of the target environment.
+Currently many new developers being introduced to OpenStack start with an
 automated installation of the services. Being able to install OpenStack
-proof-of-concept easily without knowledge of the automation tool makes
-introduction to OpenStack easier thus increasing the potential size of the
-developer community. OpenStack as many other open-source software projects is
-partly developed by community contributions, so the ease of adaptation does
-indirectly benefit the software development.
+proof-of-concept easily without knowledge of the automation tool makes getting
+introduced to OpenStack easier and as a result increases the potential size of
+the developer community. OpenStack as many other open-source software projects
+is developed with community contributions, so having an active community
+provdes an indirect benefit the software itself.
 
-Simple setups for development environments are drastically easier to implement
-than for production environments. Only practical requirement in development
-environments is that the developed software is run and can be modified. Having
-all of the applications deployed to the same host machine is most often
-sufficient. This makes it possible to make accurate assumptions of the
-deployment environment, and avoid manual cofigurations. Additionally there
-exists a number of popular tools for development environments, such as Docker
-or Vagrant. Setting up a development deployment can this way be reduced to
-running a single command.
-
-When comparing different deployment methods, this thesis focuses on production
-environments. This means that the deployment should be configurable for the
-needs of Service Level Agreements. Requirements for such environments may
-include high availability, near-zero downtime, responsiveness, security, and
-most importantly it has to be horizontally scalable.
-
-Production-grade OpenStack clouds should first be designed based on their use
-purposes without considering the use of automation. As OpenStack is a complex
-set of services it can be used for various computing environments. Some clouds
-focus on computational power, other maybe high network throughput or storage
-volume. Once the architecture of the cloud is designed, any potential
-automation tool should be decided based on how well they can be used for the
-intended architecture. Cloud operators should also feel confortable with the
-tool of choice as it will likely be used in many parts of the lifecycle of the
+Setting up a development environment is drastically easier than to deploying a
+production-grade OpenStack environment. Only practical requirement in
+development environments is that the developed software and can be executed and
+modified. Having all of the applications deployed to the same host machine is
+often sufficient. This makes it possible to make accurate assumptions of the
+target environment, and avoid manual configurations. Additionally there exists
+a number of popular tools for development environments, such as Docker
+or Vagrant. This way setting up a development environment can be achieved by
+running a single command. When comparing different deployment methods, this
+thesis focuses on production environments. This means that the deployment
+should be configurable for the needs of Service Level Agreements. Requirements
+environments may include high availability, responsiveness, security, and
+horizontal scalability. A Production-grade OpenStack clouds should be designed
+based on its use purposes without considering what automation tools will be
+used. As OpenStack consists of a complex set of services it can be used for
+various computing environments. Some clouds invest on computational power,
+while others may focus on high network throughput or storage capacity. Once the
+architecture of the cloud is established, any potential automation tool should
+be decided based on how well it can be used to support the intended
+architecture. Cloud operators should also feel comfortable with the management
+tool of choice as it will likely be used in many lifecycle operations of the
 cloud.
 
 In practice, when choosing an automation tool to be used for operating the
 cloud, one important consideration is, how easy it is to find operators capable
 of using the tool. This can be the most important factor for project managers,
-as even the most optimal tool is not practical if there are no operators for
-it. Many automation tools have evangelists that represent companies and make
-the decision of the automation tool less of a technical consideration and more
-of a business decision. An organization might end up selecting the tool that is
+as even the most optimal tool is not practical if there are no operators
+familiar with it. Many automation tools are promoted by companies making the
+decision of the automation tool less of a technical consideration and more of a
+business decision. An organization might end up selecting the tool that is
 developed by a company whose other products are already in use. Often times
 products developed by the same company have better support for
-interoperability.
-
-Even though using a family of software products from the same vendor has its
-benefits, it can cause an architectural vendor-lock. In case one of the
-products gets discontinued, replacing it with other solutions can become
-difficult if other software solutions are already dependent of it. If the
+interoperability. Even though using a family of software products from the same
+vendor has its benefits, it can cause an architectural vendor lock-in. In case
+one of the products gets discontinued, replacing it with other solutions can
+become difficult when other software solutions are built around it. If the
 product provider company gets aquired or goes down altogether, it may have a
 significant effect on other organizations relying on their products or support.
-One way to avoid vendor-lock is to use software products from various
-organizations. This requires more effort and expertise than relying on the same
-vendor. Alternatively similar products from various vendors can be used
-simultaneously. This approach is likely cumbersome and potentially expensive.
+One way to avoid vendor lock-in is to use software products from various
+organizations. This requires more effort and expertise than relying on products
+from the same vendor. Alternatively similar products from various vendors can
+be used simultaneously. This approach is likely cumbersome and potentially
+expensive.
 
 Since OpenStack is supported by many organizations, there is a lot of different
 alternatives for automation methods. Some of the methods are developed by
-open-source communities, some by commercial organization. Some of the method
-can be combined, or even have an official OpenStack project for compound
-deployment method.
-
-Some deployment methods suitable for OpenStack production environments are
-introduced next. Methods will be approached from the perspective of the
-research questions shown on Figure \ref{fig:rqs}. Dependencies for deployment
-methods are displayed on Table \ref{tab:dependencies}.
-
-Since all of the deployment methods listed below are open-source projects, they
-can theoretically be modified for any configuration needs. However in order to
-keep their comparisons reasonable, all of the required features should be
-achieved with configuration instead of changes to the methods. In practice this
-is not likely the case as deployment methods will likely be forked and modified
-for custom needs. OpenStack community encourages merging any modifications to
-the upstream project and avoiding the use of long-term forks. This unifies
-practices in the OpenStack community and helps to develop the deployment
-methods.
+open-source communities, some by commercial organizations. Some of the methods
+can be combined, or even have an official OpenStack project for combining the
+methods. Some deployment methods that are suitable for OpenStack production
+environments are introduced next. Methods will be approached from the
+perspective of the research questions shown on Figure \ref{fig:rqs}. Software
+dependencies for different features of the deployment methods are displayed on
+Table \ref{tab:dependencies}. Since all of the deployment methods listed below
+are open-source projects, they can theoretically be modified for any
+configuration needs. However in order to keep their comparisons reasonable, all
+of the required features should be achieved with configuration instead of
+changes to the methods. In practice it is common to fork and modify a
+deployment method repository. OpenStack community encourages merging any
+modifications to the upstream project and avoiding the use of long-term forks.
+This unifies practices followed in the OpenStack community and helps to
+develop the deployment methods.
 
 \begin{table}[t]
 \centering
@@ -846,19 +937,20 @@ methods.
 \begin{tabular} {r | c c c } \\
               & TripleO     & OS Helm     & OS Ansible  \\
 \hline
-Provisioning  & OpenStack   & Kubernetes  & Bare metal  \\
-Configuration & Puppet+Heat & Helm        & Ansible     \\
+Provisioning  & OpenStack   & Kubernetes  & Bare-metal  \\
+Configuration & Heat+Puppet & Helm        & Ansible     \\
 Runtime       & Nova/Ironic & Docker      & LXC/Bare    \\
 \end{tabular} \\
 \begin{tabular} {r | c c c } \\
               & Kolla Ansible & OS Charms   & OS Puppet \\
 \hline
-Provisioning  & Docker        & MAAS/Cloud  & Bare metal\\
+Provisioning  & Docker        & MAAS/Cloud  & Bare-metal\\
 Configuration & Ansible       & Juju        & Puppet    \\
 Runtime       & Docker        & LXC/Bare    & Bare      \\
 \end{tabular}
 \end{tabular}
-\caption{Deployment Method Dependencies}
+\caption{Software dependencies used for the different parts of the deployment
+         methods}
 \label{tab:dependencies}
 \end{table}
 
@@ -879,8 +971,8 @@ experience in using OpenStack services while designing and deploying overcloud.
 After first installing OpenStack either manually or by using some of the other
 automated deployment methods, TripleO can be used to deploy another OpenStack
 instance by using OpenStack services to provision server machines. For a
-performant deployment, Ironic Baremetal service is recommended instead of Nova.
-This way the runtime environment of the overcloud is not using a virtual
+performant deployment, Ironic bare-metal service is recommended instead of
+Nova. This way the runtime environment of the overcloud is not using a virtual
 machine.
 
 TripleO uses Heat orchestration service to deploy overcloud as a stack. After
@@ -892,7 +984,7 @@ for node machine images and Neutron for network provisioning.
 Before deploying overcloud, undercloud must be prepared. In addition to
 installing used OpenStack services, there are some preparation tasks for the
 undercloud. Images used by the overcloud nodes must be added to Glance. When
-using Ironic for baremetal provisioning, available nodes have to be registered
+using Ironic for bare-metal provisioning, available nodes have to be registered
 to the service. In a production-grade overcloud deployment, machine flavors
 must also match hardware on target nodes.
 
@@ -916,7 +1008,7 @@ ossifying Kubernetes into OpenStack environment.
 
 Runtime environment, when using OpenStack Helms, depends on the Kubernetes
 deployment. Kubernetes can be hosted by another cloud, but for production
-environments, baremetal installation of Kubernetes is recommended. For setting
+environments, bare-metal installation of Kubernetes is recommended. For setting
 up a production-grade Kubernetes installation for OpenStack Helm, tools such as
 Kubeadm or Airship \cite{airship} are recommended. However confguration of the
 Kubernetes cluster is outside the scope of OpenStack Helm project
@@ -948,31 +1040,27 @@ OpenStack Ansible \cite{openstack-ansible} uses Ansible roles created by
 OpenStack community for deploying OpenStack. It is a low level deployment
 method and requires good understanding of target environment and Ansible.
 OpenStack Ansible was largely developed by Rackspace in the year 2014, but has
-received community contributions later as well.
-
-OpenStack Ansible does not include high level server provisioning as it is
-intended to be used for pre-existing server infrastructure. This especially
-makes adaptation of the method difficult as the infrastructure has to be
-provided separately.
+received community contributions later as well. While it is a relatively old
+deployment method, it has had a consistent user base.
 
 OpenStack Ansible repository includes an all-in-one deployment method for a
 proof-of-concept installation on a single host. This method is not intended for
 production as any further adjustments, such as horizontable scaling would
 require drastic changes to the infrastructure.
 
-As opposed to running services in Docker containers, like with OpenStack Helm
-or Kolla Ansible, services can be installed into Linux containers
-\cite{linuxcontainers}. Some OpenStack service processes, however are run as
-native SystemD services for performance optimization.
+OpenStack Ansible does not include high level server provisioning as it is
+intended to be used for pre-existing server infrastructure. This especially
+makes adaptation of the method difficult as the infrastructure has to be
+provided separately. As opposed to running services in Docker containers, like
+with OpenStack Helm or Kolla Ansible, services can be installed into Linux
+containers \cite{linuxcontainers}. Some OpenStack service processes, however
+are run as native SystemD services for performance optimization.
 
 OpenStack Ansible configuration enables deployed applications to be split to a
 number of different node groups. This model supports various different
 OpenStack architectures but determines some of the applications that will be
 running on the same nodes. For the most part the divisions are sensible for
 instance having infrastructure services in the same node group.
-
-OpenStack Ansible is a relatively old deployment method, but it has had a
-consistent user base.
 
 \subsection{Kolla Ansible}
 
@@ -981,25 +1069,21 @@ services into Docker containers built with Kolla \cite{kolla}. Kolla is an
 official OpenStack project for building production-ready Docker containers for
 OpenStack services. Even though Kolla project is not dependent of Ansible,
 Kolla Ansible is the primary deployment method used for containers built with
-Kolla.
-
-OpenStack services will be deployed in Docker containers without orchestration
-tool such as Kubernetes. While avoiding the need to maintain a Kubernetes
-cluster, managing Docker containers manually results in more low-level
-administrative tasks related to scaling and updating the deployment.
+Kolla. OpenStack services will be deployed in Docker containers without
+orchestration tool such as Kubernetes. While avoiding the need to maintain a
+Kubernetes cluster, managing Docker containers manually results in more
+low-level administrative tasks related to scaling and updating the deployment.
 
 Kolla Ansible is a popular deployment method for developers getting introduced
 to OpenStack as it provides a simple all-in-one setup for OpenStack. For
 developers already familiar with Docker, Kolla Ansible is relatively easy to
-get into.
-
-Another benefit of using Kolla Ansible project as opposed to deploying
-OpenStack with Ansible to LXC containers, is to leverage the functionality of
-Docker Engine for virtual resource provisioning. Docker provides simple
-commands for provisioning networks and volumes in a host-agnostic way. With
-native virtualization tools, device provisioning is typically done by different
-programs, such as LVM for volumes and bridgeutils for virtual network
-interfaces.
+get into. Another benefit of using Kolla Ansible project as opposed to
+deploying OpenStack with Ansible to LXC containers, is to leverage the
+functionality of Docker Engine for virtual resource provisioning. Docker
+provides simple commands for provisioning networks and volumes in a
+host-agnostic way. With native virtualization tools, device provisioning is
+typically done by different programs, such as LVM for volumes and bridgeutils
+for virtual network interfaces.
 
 With a low-level containerization tool such as LXC, virtual networks for
 containers have to be created manually. This includes creating veth pairs, and
@@ -1007,49 +1091,46 @@ bridging appropriate interfaces to wanted physical network interfaces. These
 operations typically require an operator who is capable with networking. For
 this reason, Docker provides simple commands for setting up virtual networks,
 and a variety of different network types. Even overlay networks accross
-multiple host operating systems can be setup with Docker.
+multiple host operating systems can be setup with Docker. In addition to
+provisioning virtual devices, Docker provides other commands for operating on
+them in a simple fashion. Devices are easy to attach or detach from containers.
+Simplicity of use and reliability of operations is one of the reasons for
+Docker popularity.
 
-In addition to provisioning virtual devices, docker provides other commands for
-operating on them in a simple fashion. Devices are easy to attach or detach
-from containers. Simplicity of use and reliability of operations is one of the
-reasons for Docker popularity.
-
-According to user-surveys container-based deployment methods have recenlty
-become popular among OpenStack community. This follows the trend of containers
-becoming generally popular in software development and administration. Having
-container based method for environment setup will likely bring more potential
-developers to OpenStack community.
+According to recent OpenStack user surveys container-based deployment methods
+have recenlty become popular among OpenStack community. This follows the trend
+of containers becoming generally popular in software development and
+administration. Having container based method for environment setup will likely
+bring more potential developers to OpenStack community.
 
 \subsection{OpenStack Charms}
 
 OpenStack Charms \cite{charm-deployment-guide} method uses Juju for deployment
 of OpenStack. Due to OpenStack Charms deployment method being largely
 maintained by Canonical, it has a relatively large support from Canonical but
-at the same time it has a potential for vendor-lock. OpenStack Charms only
+at the same time it has a potential for vendor lock-in. OpenStack Charms only
 supports Ubuntu target hosts. On the other hand, according to OpenStack user
 surveys, Ubuntu is the most commonly used host distro in OpenStack deployments.
 Likewise Juju is a popular method for both developers getting introduced to
-OpenStack and OpenStack administrators.
-
-OpenStack Charms is a versatile deployment method that is applicable for both
-OpenStack development and production use. It supports a variety of existing
-cloud providers. Once developer or operator is familiar Juju, it can be used
-for easy setup of a number of other services as well.
+OpenStack and OpenStack administrators. OpenStack Charms is a versatile
+deployment method that is applicable for both OpenStack development and
+production use. It supports a variety of existing cloud providers. Once
+developer or operator is familiar Juju, it can be used for easy setup of a
+number of other services as well.
 
 Canonical recommends MAAS to be used for datacenter provisioning in a
 production OpenStack deployment. A large part of the Juju functionality comes
 from cloud controllers, manual provisioning is not recommended even though it
-is supported with Juju as well. MAAS provides lightweight baremetal server
-provisioning has a good support for use with Juju.
-
-OpenStack Charms is a deployment method that includes a lot of software
-developed by Canonical. It is a good example of a set of software solutions
-from a single vendor that provide a good support for each other. Canonical also
-provides consulting and exerice for custom OpenStack cloud builds.  OpenStack
-marketplace includes also tailored OpenStack software solutions with decent
-support. One reason for using Canonical's support for building OpenStack cloud
-with OpenStack Charms could be to get an open-source installation of OpenStack
-on-premises and get mentoring for data center administrators in the process.
+is supported with Juju as well. MAAS provides lightweight bare-metal server
+provisioning has a good support for use with Juju. OpenStack Charms is a
+deployment method that includes a lot of software developed by Canonical. It is
+a good example of a set of software solutions from a single vendor that provide
+a good support for each other. Canonical also provides consulting and exerice
+for custom OpenStack cloud builds.  OpenStack marketplace includes also
+tailored OpenStack software solutions with decent support. One reason for using
+Canonical's support for building OpenStack cloud with OpenStack Charms could be
+to get an open-source installation of OpenStack on-premises and get mentoring
+for data center administrators in the process.
 
 From a techincal perspective one of the reasons why developers may like Juju
 and as a result OpenStack Charms deployment method, is the fact that the
@@ -1066,38 +1147,34 @@ repositories.
 Puppet OpenStack project houses Puppet \cite{puppet-deployment-guide} modules
 for deploying OpenStack services. Additionally it includes scipts to setup
 deployments including an all-in-one proof of concept setup. In order to use
-Puppet OpenStack, Puppet needs to be installed in data center.
-
-Puppet OpenStack is largely used for developmnt environment setups, and for
-automated testing of OpenStack services. Additionally it can be used for
-large-scale deployments of OpenStack. Puppet OpenStack consists of Puppet
-modules for each of the OpenStack components. Each of the modules has its own
-source repository.
+Puppet OpenStack, Puppet needs to be installed in data center. Puppet OpenStack
+is largely used for development environment setups, and for automated testing
+of OpenStack services. Additionally it can be used for large-scale deployments
+of OpenStack. Puppet OpenStack consists of Puppet modules for each of the
+OpenStack components. Each of the modules has its own source repository.
 
 \chapter{Questionnaire} \label{questionnaire}
 
 A small scale questionnaire was conducted for OpenStack administrators.
 Questionnaire explored the methods being used, and different aspects of using
 automation from administrator's point of view. Questionnaire was conducted as
-an online form that was linked to respondents.
-
-Questionnaire is complementary to OpenStack community user surveys, and it
-provides data to answer research questions of this paper in particular.
-Comparing results from the questionnaire to the OpenStack user surveys when
-appropriate provides means of verifying some of the responses. In addition the
-questionnaire focuses to a particular area of OpenStack administration,
-software automation.
-
-While questionnaire was formed with a particular respondent set in mind, it is
-universal enough to be used for any set of respondents as long as they have
-experience of using automation for administering OpenStack deployments. As such
-it could be sent to a larger set of respondents than what was used in this
-paper.
+an online form that was linked to respondents. Questionnaire is complementary
+to OpenStack community user surveys, and it provides data to answer research
+questions of this thesis in particular. Comparing results from the
+questionnaire to the OpenStack user surveys when appropriate provides means of
+verifying some of the responses. In addition the questionnaire focuses to a
+particular area of OpenStack administration, software automation. Questionnaire
+was formed with a particular respondent set of OpenStack system administrators
+in mind. However it is universal enough to be used for larger set of
+respondents, such as developers, as long as they have some use experience of
+some of the automated OpenStack deployments methods. It could potentially be
+used for a larger scale respondent set, but we did not do so during the work of
+this thesis.
 
 Only one of the research questions shown on Figure \ref{fig:rqs} that cannot be
-directly answered with documentation, reference papers, or practical testing
-only, is RQ3 about the benefits of software automation. This is largely due to
-the subjective nature of benefits in general. Any measures provided for
+directly answered with documentation, reference literature, or practical
+testing only, is RQ3 about the benefits of software automation. This is largely
+due to the subjective nature of benefits in general. Any measures provided for
 evaluating benefits are easily complex, ambiguous or incomplete and could be a
 topic for research in other fields such as data analysis. While interview
 research can be questioned for many of the same reasons, combining it to other
@@ -1105,6 +1182,53 @@ forms of research can reinforce results and hypothesis aquired from other
 methods.
 
 \section{Goals}
+
+\begin{figure}[t]
+\centering
+\begin{enumerate}
+  \itemsep0em
+  \item How many years of professional IT experience do you have?
+  \item Which company is your current employer?
+  \item Which country is your team / branch office located at?
+  \item Select one or more roles that best describe your current area of
+        responsibility.
+  \begin{enumerate}
+    \itemsep0em
+    \item Product Owner
+    \item Project Manager
+    \item Software Developer
+    \item Software Tester
+    \item System Administrator
+  \end{enumerate}
+\end{enumerate}
+\caption{Questions about the background of the respondent}
+\label{fig:questionnaire-tool-details}
+\end{figure}
+
+Questionnaire started with some questions about the background of the
+respondents, such as professional experience, employer organization. As the
+expected group of respondents was small, more qualitative information regarding
+the background could be used. At the same time the questions related to the use
+of automation were formed in a way that they could be used in a larger scale.
+Country where the respondents' branch office is located was asked as well.
+There may be regional differences when comparing OpenStack or any IT
+infrastructure design choices and software stacks. Although national
+differences may be relatively small for countries close to one another,
+continental differences may be more significant. One of the background
+questions asked the respondent to choose one or more roles seen as the most
+relevant for her. Even though some of the questions about the use of automation
+may be the most relevant for administrators, it is possible for people to have
+a number of responsibilities simultaneously.
+
+Especially when it comes to selecting software tools for a project,
+administrators may provide recommendations, but generally the choice needs to
+be approved by project manager. Technical advise received from experts has
+often a big impact on the decision. Other potential influencers may be vendors
+of other software that is in use in the organization. It is possible for an
+organization to drive itself into a vendor lock-in which may determine the
+automation methods for OpenStack deployment. However finding out such
+situations is outside of the scope of this questionnaire, partly because it may
+be considered a subject to non-disclosure in some organizations.
 
 \begin{figure}[t]
 \centering
@@ -1121,6 +1245,39 @@ methods.
 \caption{Questions about the use of automation}
 \label{fig:questionnaire-tool-details}
 \end{figure}
+
+Potential value of the questionnaire as an approach to answering the research
+questions shown on Figure \ref{fig:rqs} is to gain insight from administrators
+with experience in using some automated solutions for operating OpenStack. As
+RQ1 and RQ2 can for the most part be answered by referencing documentation,
+benefits of the use of automation are best described by people with experience
+of operating a cloud on a daily basis. After all, automation tools have a big
+impact on administrators' work. Ideally the tools being used support the work
+of operating a service in some way. Questions about the details of automation
+with OpenStack administration are displayed on Figure
+\ref{fig:questionnaire-tool-details}. One purpose of the questions was to find
+out methods being used. Since the development of the different deployment
+methods is a subject to current trends in the industry, year of adaptation was
+asked as well; since OpenStack source code was published in the year 2011, its
+unlikely that any tool would be adapted before that.
+
+Linux distribution used for target hosts was asked as well. Some deployment
+methods support only certain distros, and according to OpenStack community user
+surveys \cite{openstack-user-survey-2018} Ubuntu is the most popular Linux
+distribution used by the OpenStack community. There can potentially be a
+relation between the node operating system distribution and the selected
+deployment method. Some of the methods support only certain Linux
+distributions.
+
+Respondents were asked whether they have used the automation tool with other
+software configurations. That may provide some indirect insight to research
+question RQ1 in figure \ref{fig:rqs} about the factors affecting the deployment
+method design. While some deployment methods are only applicable for OpenStack,
+others are based on tools that are so widely used that they may have had an
+influence on the decision of the deployment method. On the other hand in some
+cases the automation tools may be introduced for the administrator with
+OpenStack deployment, and afterwards it will used for other software
+configurations as well.
 
 \begin{figure}[t]
 \begin{enumerate}
@@ -1145,67 +1302,6 @@ methods.
 \label{fig:questionnaire-grading}
 \end{figure}
 
-Questionnaire started with some questions about the background of the
-respondents, such as professional experience, employer organization. As the
-expected group of respondents was small, more qualitative information regarding
-the background could be used. At the same time the questions related to the use
-of automation were formed in a way that they could be used in a larger scale.
-
-Country where the respondents' branch office is located was asked as well.
-There may be regional differences when comparing OpenStack or any IT
-infrastructure design choices and software stacks. Although national
-differences may be relatively small for countries close to one another,
-continental differences may be more significant.
-
-One of the background questions asked the respondent to choose one or more
-roles seen as the most relevant for her. Even though some of the questions
-about the use of automation may be the most relevant for administrators, it is
-possible for people to have a number of responsibilities simultaneously.
-
-Especially when it comes to selecting software tools for a project,
-administrators may provide recommendations, but generally the choice needs to
-be approved by project manager. Technical advise received from experts has
-often a big impact on the decision. Other potential influencers may be vendors
-of other software that is in use in the organization. It is possible for an
-organization to drive itself into a vendor-lock which may determine the
-automation methods for OpenStack deployment. However finding out such
-situations is outside of the scope of this questionnaire, partly because it may
-be considered a subject to non-disclosure in some organizations.
-
-Potential value of the questionnaire as an approach to answering the research
-questions shown on Figure \ref{fig:rqs} is to gain insight from administrators
-with experience in using some automated solutions for operating OpenStack. As
-RQ1 and RQ2 can for the most part be answered by referencing documentation,
-benefits of the use of automation are best described by people with experience
-of operating a cloud on a daily basis. After all, automation tools have a big
-impact on administrators' work. Ideally the tools being used support the work
-of operating a service in some way.
-
-Questions about the details of automation with OpenStack administration are
-displayed on figure \ref{fig:questionnaire-tool-details}. One purpose of the
-questions was to find out methods being used. Since the development of
-different deployment methods is a subject to current trends in the industry,
-year of adaptation was asked as well; since OpenStack source code was published
-in the year 2011, its unlikely that any tool would be adapted before that.
-
-Linux distribution used for target hosts was asked as well. Some deployment
-methods support only certain distros, and according to OpenStack community user
-surveys \cite{openstack-user-survey-2018} Ubuntu is the most popular Linux
-distribution used by the OpenStack community. There can potentially be a
-relation between the node operating system distribution and the selected
-deployment method. Some of the methods support only certain Linux
-distributions.
-
-Respondents were asked whether they have used the automation tool with other
-software configurations. That may provide some indirect insight to research
-question RQ1 in figure \ref{fig:rqs} about the factors affecting the deployment
-method design. While some deployment methods are only applicable for OpenStack,
-others are based on tools that are so widely used that they may have had an
-influence on the decision of the deployment method. On the other hand in some
-cases the automation tools may be introduced for the administrator with
-OpenStack deployment, and afterwards it will used for other software
-configurations as well.
-
 Respondents were given a scale from one to five to grade different aspects of
 their primarily used deployment method. Lowest meant that the description in
 question does not match experiences with the used tool and highest grade meant
@@ -1219,15 +1315,14 @@ While previous experience with the automation tool certainly affects all of the
 aspects asked, trends in overall gradings may provide some insight into
 benefits of automated software management in general. Some tools may be more
 suitable for different lifecycle operations, but for a more granular analysis,
-large dataset would be required.
-
-Questionnaire focused on experiences in using automated solutions for
-administering OpenStack. While this is sufficient for gaining basic knowledge
-about tools being used, and how the tools are seen, there are certain aspects
-that were left outside of the scope of the questionnaire, but may be crucial
-for designing custom cloud platform. Since scalability is often a requirement
-for a successful cloud platform, deployment methods have to be able to scale
-along with the deployment environment without adding complexity.
+large dataset would be required. Questionnaire focused on experiences in using
+automated solutions for administering OpenStack. While this is sufficient for
+gaining basic knowledge about tools being used, and how the tools are seen,
+there are certain aspects that were left outside of the scope of the
+questionnaire, but may be crucial for designing custom cloud platform. Since
+scalability is often a requirement for a successful cloud platform, deployment
+methods have to be able to scale along with the deployment environment without
+adding complexity.
 
 Another aspect of deployment that was not covered in questionnaire is the
 specific use purpose of the deployment. Since OpenStack clouds may be used for
@@ -1265,7 +1360,7 @@ OpenStack user surveys.
       at={(0.5,-0.20)},
       anchor=north,legend columns=2
     },
-    ylabel={Users},
+    ylabel={no Users},
     symbolic x coords={
       2014,
       2015,
@@ -1368,8 +1463,8 @@ OpenStack user surveys.
 \label{fig:used-distros}
 \end{figure}
 
-Questionnaire was sent to people from thesis work group contact network.
-Altogether nine answers were received. Amount of answers was small due to
+We sent the questionnaire to people from thesis work group contact network and
+received altogether nine answers. Amount of answers was small due to
 questionnare being sent to a relatvely small contact network and due to
 aswering to it being voluntary. While providing small dataset, these facts make
 the answer data more reliable on other aspects. It would be possible to repeat
@@ -1590,7 +1685,7 @@ according to custom needs. Thus there are only few requirements of the cloud
 functionality. Basically it should be possible to create virtual networks and
 virtual machines.
 
-\section{Setup}
+\section{Setup} \label{evaluation-setup}
 
 \begin{figure}[!b]
 \centering
@@ -1677,8 +1772,9 @@ when deploying a cloud inside a cloud.
 
 Since infrastructure provisioning is outside of the scope of OpenStack-Ansible,
 host machines and virtual networks were provisioned with custom Heat stack
-templates. Infrastructure provisioning from OpenStack cloud is conceptually
-similiar to how TripleO uses undercloud or how Juju uses cloud providers.
+templates (see Appendix \ref{heat-templates}). Infrastructure provisioning from
+OpenStack cloud is conceptually similiar to how TripleO uses undercloud or how
+Juju uses cloud providers.
 
 Test environment was provisioned by using Heat orchestration tool. Heat
 provisions servers for hosts and networks used in deployment. Additionally some
@@ -1716,11 +1812,11 @@ configuration files.
 Once deployment host is prepared, OpenStack-Ansible repository includes shell
 script for bootstrapping OpenStack Ansible deployment. Script installs Ansible
 and the roles used in deployment. It hooks configuration files to be used in
-OpenStack Ansible execution.
-
-Once OpenStack Ansible is prepared, configuration files have to be installed on
-the deployment server, which was done with a custom Ansible playbook.
-OpenStack-Ansible uses three configuration files for describing the deployment.
+OpenStack Ansible execution. Once OpenStack Ansible is prepared, configuration
+files have to be installed on the deployment server, which was done with a
+custom Ansible playbook. OpenStack-Ansible uses three configuration files for
+describing the deployment. See Appendix \ref{ansible-setup} for preparation
+tasks automated with Ansible as well as configuration files for the deployment.
 
 \textit{openstack\_user\_config.yml} file describes which hosts are used for
 particular services, and IP addressing. It maps different node types to
@@ -1810,10 +1906,11 @@ and network diagnostic tools. Many of the basic issues such as problems with
 connectivity, will likely result in failed playbook execution.
 
 Approaches to verifying software configurations can be highly analytical, and
-based on static checks. Rehearsal \cite{rehearsal} is a software developed for
-verifying system configurations applied with puppet. While similiar tools can
-be created for other software configuration management tools, this paper
-focuses on core functionality which is simple enough to verify manually.
+based on static checks. Rehearsal \cite{shambaugh2016rehearsal} is a software
+developed for verifying system configurations applied with puppet. While
+similiar tools can be created for other software configuration management
+tools, this thesis focuses on core functionality which is simple enough to
+verify manually.
 
 OpenStack-Ansible includes tasks for both setting up some basic resources such
 as provider networks and machine images, as well as verifying functional cloud
@@ -1967,26 +2064,24 @@ learn how OpenStack is deployed.
 
 \chapter{Summary}
 
-This paper has presented contemporary methods for automating configuration
+This thesis has presented contemporary methods for automating configuration
 tasks for a cloud platform deployment. Different designs, as well as tools and
 components included in deployment methods have been introduced. Other
 differences between methods have been explored as well. Lastly, some of the
 benefits of the development of automated tools have been presented and
-reasoned.
-
-Answers to research questions shown on Figure \ref{fig:rqs} are based on
-reference publications, technical documentation, a small scale questionnaire,
-as well as a deployment test conducted in a virtualized environment. There have
-not been conflicting results gained from different sources although some of the
-methods focus on different aspects of the research.
-
-Topic of this paper is motivated by contemporary practices in IT infrastructure
-management utilizing cloud computing and popularity of automating system
-configuration tasks. These trends have emerged from years of providing
-large scale internet-based services. Recent developments in virtualization
-technologies have helped to automate different administrative tasks. At the
-same time organizations adapting agile philosophies for IT service management
-has created need to increase the level of automation in service management.
+reasoned. Answers to research questions shown on Figure \ref{fig:rqs} are based
+on reference publications, technical documentation, a small scale
+questionnaire, as well as a deployment test conducted in a virtualized
+environment. There have not been conflicting results gained from different
+sources although some of the methods focus on different aspects of the
+research. Topic of this thesis is motivated by contemporary practices in IT
+infrastructure management utilizing cloud computing and popularity of
+automating system configuration tasks. These trends have emerged from years of
+providing large scale internet-based services. Recent developments in
+virtualization technologies have helped to automate different administrative
+tasks. At the same time organizations adapting agile philosophies for IT
+service management has created need to increase the level of automation in
+service management.
 
 Cloud computing has provided scalable infrastructure for services provided over
 the internet. Cloud platforms can provide infrastructure as a service for
@@ -1994,15 +2089,13 @@ external organizations or different departments in the same organization. Cloud
 platforms are administered much the same way than other IT services. In order
 to be profitable cloud platforms need to be large. Administrative tasks in
 cloud datacenters can become time-consuming, difficult, and entail a lot of
-operational risks.
-
-OpenStack is a family of open-source software projects for running cloud
-platform. It has been developed by various organizations and community
-contributions. Currently OpenStack is the most commonly used software for
-running private clouds. It is being used by big organizations in
-telecommunication, retail, finance and scientific research. Systm
-architecturally OpenStack bears close resemblance to other popular public cloud
-platforms AWS, Azure and GCP.
+operational risks. OpenStack is a family of open-source software projects for
+running cloud platform. It has been developed by various organizations and
+community contributions. Currently OpenStack is the most commonly used software
+for running private clouds. It is being used by big organizations in
+telecommunication, retail, finance and scientific research. Architecturally
+OpenStack bears close resemblance to other popular public cloud platforms AWS,
+Azure and GCP.
 
 Software configuration management has become a popular solution for
 administering datacenters. It provides means to create configurations that are
@@ -2018,23 +2111,21 @@ services to available server infrastructure. Some deployment methods include
 infrastructure provisioning while others are run against pre-existing server
 infrastructure. Design of different automated deployment methods is driven by
 their use purposes. Methods may focus on easy adaptation, extendability,
-configurability or operability with varying emphasis.
-
-Some of the deployment methods only include assets for an initial deployment of
-OpenStack. Further operation and maintenance would then have to be provided
-with custom solutions or by using other tools available. Other deployment
-methods include functionality for scaling, updating, or health monitoring the
-deployment. The latter type of deployment methods usually contains more
-configuration items, whose operation has to be assured during cloud operations.
-The former type does often not include any additional software dependencies
-than tool used for the deployment itself.
+configurability or operability with varying emphasis. Some of the deployment
+methods only include assets for an initial deployment of OpenStack. Further
+operation and maintenance would then have to be provided with custom solutions
+or by using other tools available. Other deployment methods include
+functionality for scaling, updating, or health monitoring the deployment. The
+latter type of deployment methods usually contains more configuration items,
+whose operation has to be assured during cloud operations. The former type does
+often not include any additional software dependencies than tool used for the
+deployment itself.
 
 There are parties that may benefit from the use of automation tools indirectly.
 In case automation can be used for providing high quality service in an
 affordable fashion, both the service providers and end users benefit from it.
 While hhis benefit may even seem obvious it is difficult to prove, since the
 actual measurements on savings can be complex and a subject to non-disclosure.
-
 Since automated tools are primarily used by system administrators, they are the
 primary beneficiaries from the development of the tools. Results from
 questionnaire presented in Chapter \ref{questionnaire} suggest that system
@@ -2048,9 +2139,24 @@ general is increasing and being applied in areas such as decision making, using
 it to be able to automate system administration tasks is not totally
 unexpected. In addition to providing reliability for repeating tasks, it may
 even create new possibilities for management of large scale IT infrastructures.
-
 There are no obvious solutions or de facto software for automating
 infrastructure management, although some methods are more popular than others.
-Even though some methods will inevitably become deprecated at some point, the
-need for automation for infrastructure management has a number of reasons to
-stay relevant.
+Even though some methods will inevitably become deprecated, automation for
+infrastructure management has a number of reasons to provide value for IT
+administators.
+
+Use of automation in IT service management has been steadily increasing and
+seems to continue to do so. Many solutions have been developed recently, but
+there are still many potential directions for future work. As we have pointed
+out in this paper, automated deployment methods are affected by the deployed
+software and paradigms for administering the software. Research of new
+virtualization technologies and network protocols may have a big impact on the
+deployment methods. They can potentially obsolete crucial features of some of
+the deployment methods that we have presented. However as we also noticed some
+of the benefits of the automated software configuration methods are no
+restricted to the context where they are being used. Even if there were to be
+some fundamental changes in the way that IT services are being provided, being
+able to reduce operative risk by automating administrative tasks can still be
+found useful. As such, other potential direction for future work could be
+further development of software automation tools or even study of idempotency
+in the context of software configurations.

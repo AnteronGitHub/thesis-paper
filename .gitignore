@@ -12,3 +12,5 @@
 *.bcf
 *.run.xml
 *.blg
+
+_minted*

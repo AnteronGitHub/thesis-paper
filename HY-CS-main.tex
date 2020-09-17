@@ -96,6 +96,7 @@
 \usepackage[pdftex, plainpages=false]{hyperref} % For hyperlinks and pdf metadata
 \usepackage{fancyhdr}        % For nicer page headers
 \usepackage{tikz}            % For making vector graphics (hard to learn but powerful)
+\usepackage{tikz-uml}
 %\usepackage{wrapfig}        % For nice text-wrapping figures (use at own discretion)
 \usepackage{amsmath, amssymb} % For better math
 
@@ -105,6 +106,9 @@
 
 \usepackage{pgf-pie}
 \usepackage{pgfplots}
+
+\usepackage[T1]{fontenc}
+\usepackage{minted}
 
 \pgfplotsset{width=9cm,compat=1.8}
 
@@ -378,32 +382,32 @@ Administration, DevOps, IaC}
 
 \begin{abstract}
 
-Internet is nowadays being used as a platform for providing a wide variety of
-different services. This has created challenges related to scaling IT
+Nowadays the Internet is being used as a platform for providing a wide variety
+of different services. That has created challenges related to scaling IT
 infrastructure management. Cloud computing is a popular solution for scaling
 infrastructure, either by building a self-hosted cloud or by using cloud
-platform provided by external organizations. This transfers some the challenges
-related to large scale to the cloud administrators.
+platform provided by external organizations. This way some the challenges
+related to large scale can be transferred to the cloud administrators.
 
 OpenStack is a group of open-source software projects for running cloud
-platforms. It is the most commonly used software for building private clouds.
-Since initially published by NASA and Rackspace, it has been used by various
-organizations such as Walmart, China Mobile and Cern nuclear research
-institute. Largest production deployments of OpenStack clouds consist of
+platforms. It is currently the most commonly used software for building private
+clouds. Since initially published by NASA and Rackspace, it has been used by
+various organizations such as Walmart, China Mobile and Cern nuclear research
+institute. The largest production deployments of OpenStack clouds consist of
 thousands of physical server computers located in multiple datacenters.
 
-OpenStack community has created many deployment methods that take advantage of
-automated software configuration management. Methods are built with state of
-the art software for automating different administrative tasks. Deployment
-methods take different approaches to automating infrastructure management for
-OpenStack.
+The OpenStack community has created many deployment methods that take advantage
+of automated software configuration management. The deployment methods are
+built with state of the art software for automating different administrative
+tasks. They take different approaches to automating infrastructure management
+for OpenStack.
 
-This paper compares some of the automated deployment methods being used and
-reflects on some of the benefits of using automation for configuration
-management. Comparisons are based on technical documentation and reference
-literature. A questionnaire related to the use of automation was conducted for
-OpenStack administrators. Lastly, one of the deployment methods was tested in a
-virtualized environment.
+This thesis compares some of the automated deployment methods for OpenStack and
+examines the benefits of using automation for configuration management. We
+present comparisons based on technical documentations as well as reference
+literature. Additionally, we conducted a questionnaire for OpenStack
+administrators about the use of automation. Lastly, we tested one of the
+deployment methods in a virtualized environment.
 
 \end{abstract}
 
@@ -436,10 +440,13 @@ virtualized environment.
 \printbibliography
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\backmatter
-%\begin{appendices}
+\backmatter
+\begin{appendices}
 
-%\end{appendices}
+\input{appendix_heat-templates}
+\input{appendix_ansible-setup}
+
+\end{appendices}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}

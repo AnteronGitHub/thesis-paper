@@ -1,0 +1,154 @@
+\appendix{Ansible preparation and configuration for the test deployment} \label{ansible-setup}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+---
+- name: Clone OpenStack-Ansible repository
+  git:
+    repo: https://github.com/openstack/openstack-ansible.git
+    version: 20.1.2
+    dest: /opt/openstack-ansible
+
+- name: Ensure openstack_deploy directory exists
+  file:
+    path: /etc/openstack_deploy
+    state: directory
+
+- name: Copy configuration files
+  copy:
+    src: "files/{{ item }}"
+    dest: "/etc/openstack_deploy/{{ item }}"
+  with_items:
+    - openstack_user_config.yml
+    - user_secrets.yml
+    - user_variables.yml
+\end{minted}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+---
+# openstack_user_config.yml
+cidr_networks:
+  container: 172.29.236.0/22
+  tunnel: 172.29.240.0/22
+  storage: 172.29.244.0/22
+
+used_ips:
+  - "172.29.236.1,172.29.236.50"
+  - "172.29.236.100"
+  - "172.29.240.1,172.29.240.50"
+  - "172.29.240.100"
+  - "172.29.244.1,172.29.244.50"
+  - "172.29.244.100"
+  - "172.29.248.1,172.29.248.50"
+  - "172.29.248.100"
+
+global_overrides:
+  internal_lb_vip_address: 172.29.236.100
+  external_lb_vip_address: 172.29.236.100
+  management_bridge: "br-mgmt"
+  provider_networks:
+    - network:
+        container_bridge: "br-mgmt"
+        container_type: "veth"
+        container_interface: "ens3"
+        ip_from_q: "container"
+        type: "raw"
+        group_binds:
+          - all_containers
+          - hosts
+        is_container_address: true
+    - network:
+        container_bridge: "br-vxlan"
+        container_type: "veth"
+        container_interface: "ens4"
+        ip_from_q: "tunnel"
+        type: "vxlan"
+        range: "1:1000"
+        net_name: "vxlan"
+        group_binds:
+          - neutron_linuxbridge_agent
+    - network:
+        container_bridge: "br-storage"
+        container_type: "veth"
+        container_interface: "ens5"
+        ip_from_q: "storage"
+        type: "raw"
+        group_binds:
+          - glance_api
+          - cinder_api
+          - cinder_volume
+          - nova_compute
+          - swift_proxy
+
+# Galera, Memcached, RabbitMQ, Utility host
+shared-infra_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Package repository host
+repo-infra_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Glance, Nova, Heat API and Horizon host
+os-infra_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Keystone
+identity_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Neutron
+network_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Nova compute
+compute_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Cinder API
+storage-infra_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Cinder volume service
+storage_hosts:
+  aio1:
+    ip: 172.29.236.100
+    container_vars:
+      cinder_storage_availability_zone: cinderAZ_1
+      cinder_default_availability_zone: cinderAZ_1
+      cinder_backends:
+        lvm:
+          volume_backend_name: LVM_iSCSI
+          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+          volume_group: cinder-volumes
+          iscsi_ip_address: "{{ cinder_storage_address }}"
+        limit_container_types: cinder_volume
+
+# Rsyslog
+log_hosts:
+  aio1:
+    ip: 172.29.236.100
+
+# Load balancer
+haproxy_hosts:
+  aio1:
+    ip: 172.29.236.100
+\end{minted}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+---
+# user_variables.yml
+debug: false
+
+openstack_service_publicuri_proto: https
+openstack_service_adminuri_proto: https
+openstack_service_internaluri_proto: https
+
+keystone_service_internaluri_insecure: true
+keystone_service_adminuri_insecure: true
+\end{minted}
