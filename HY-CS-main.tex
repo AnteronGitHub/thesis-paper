@@ -1,0 +1,452 @@
+%% History:
+%% May 2019 Tomi Männistö, Antti-Pekka Tuovinen proofreading; 30 vs. 40 cr theses, etc.
+%% May 2019 Tomi Männistö changed from babelbib to bibtex; Abstract page (and other pages as well) reformatting.
+%% January–May 2019 several issues fixed by Niko Mäkitalo; long fields in abstract
+%% March 2018 template file extended by Lea Kutvonen to exploit HYthesisML.cls.
+%% Feb2018 This template file for the use of HYgraduML.cls was  modified by Veli Mäkinen from HY_fysiikka_LuKtemplate.tex
+%% authored by Roope Halonen ja Tomi Vainio in 2017.
+%% Some text is also inherited from engl_malli.tex versions by Kutvonen, Erkiö, Mäkelä, Verkamo, Kurhila, and
+%% Nykänen, to accompany tktltiki.cls (by Puolakka 2002).
+
+
+%% Follow comments to support use.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% STEP 1: Choose options for MSc / BSc layout and your bibliographic style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%  Language: 
+%%      finnish, swedish, or english
+%%  Pagination (use twoside by default)  
+%%      oneside or twoside,
+%%  Study programme / kind of report
+%%      csm  = pro gradu in new Computer science MSc;
+%%      cs = pro gradu in old Computer Science MSc;
+%%      tkt = BSc thesis in new curricula;
+%%      tktl= BSc thesis in old curricula;
+%%  For MSc choose your line or track:
+%%      (30 cr thesis, 2020 onwards, Master of Computer Science programme = csm)
+%%      software-track-2020 = Software study track
+%%      algorithms-track-2020 = Algorithms study track
+%%      networking-track-2020 = Networking study track
+%%
+%%      (30 cr thesis, Master of Computer Science programme = csm)
+%%      sw-track-2018 = Software Systems study track
+%%      alko-track-2018 = Algorithms study track
+%%      nodes-track-2018 = Networking and Services study track
+%%
+%%      (30 cr thesis, Master of Computer Science programme = csm)
+%%      sw-line-2017 =  Software systems subprogramme
+%%      alko-line-2017 = Algorithms, Data Analytics and Machine Learning subprogramme
+%%      bio-line-2017 = Algorithmic Bioinformatics subprogramme
+%%      nodes-line-2017 = Networking and Services subprogramme
+%%
+%%      (40 cr thesis, = cs)
+%%      sw-line = Software Systems specialisation line 
+%%      alko-line = Algorithms specialisation line
+%%      bio-line = Algorithmic bioinformatics specialisation line
+%%      nodes-line = Networking and Services specialisation line
+
+\documentclass[english,twoside,censored,cs,nodes-line]{HYthesisML}
+
+
+% In theses, open new chapters only at right page.
+% For other types of documents, may ask "openany" in document.
+\PassOptionsToClass{openright,twoside,a4paper}{report}
+%\PassOptionsToClass{openany,twoside,a4paper}{report}
+
+\usepackage{csquotes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% REFERENCES
+%% Some notes on bibliography usage and options:
+%% natbib -> you can use, e.g., \citep{} or \parencite{} for (Einstein, 1905); with APA \cite -> Einstein, 1905 without ()
+%% maxcitenames=2 -> only 2 author names in text citations, if more -> et al. is used
+%% maxbibnames=99 as no great need to suppress the biliography list in a thesis
+%% for more information see biblatex package documentation, e.g., from https://ctan.org/pkg/biblatex 
+
+%% Reference style: select one 
+%% for APA = Harvard style = authoryear -> (Einstein, 1905) use:
+%\usepackage[style=authoryear,bibstyle=authoryear,backend=biber,natbib=true,maxnames=99,maxcitenames=2,giveninits=true,uniquename=init]{biblatex}
+%% for numeric = Vancouver style -> [1] use:
+\usepackage[style=numeric,bibstyle=numeric,backend=biber,natbib=true,maxbibnames=99,giveninits=true,uniquename=init]{biblatex}
+%% for alpahbetic -> [Ein05] use:
+%\usepackage[style=alphabetic,bibstyle=alphabetic,backend=biber,natbib=true,maxbibnames=99,giveninits=true,uniquename=init]{biblatex}
+%
+
+\addbibresource{bibliography.bib}
+% in case you want the final delimiter between authors & -> (Einstein & Zweistein, 1905) 
+% \renewcommand{\finalnamedelim}{ \& }
+% List the authors in the Bibilipgraphy as Lastname F, Familyname G,
+\DeclareNameAlias{sortname}{family-given}
+% remove the punctuation between author names in Bibliography 
+%\renewcommand{\revsdnamepunct}{ }
+
+
+%% Block of definitions for fonts and packages for picture management.
+%% In some systems, the figure packages may not be happy together.
+%% Choose the ones you need.
+
+%\usepackage[utf8]{inputenc} % For UTF8 support, in some systems. Use UTF8 when saving your file.
+
+\usepackage{lmodern}         % Font package, again in some systems.
+\usepackage{textcomp}        % Package for special symbols
+\usepackage[pdftex]{color, graphicx} % For pdf output and jpg/png graphics
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage[pdftex, plainpages=false]{hyperref} % For hyperlinks and pdf metadata
+\usepackage{fancyhdr}        % For nicer page headers
+\usepackage{tikz}            % For making vector graphics (hard to learn but powerful)
+\usepackage{tikz-uml}
+%\usepackage{wrapfig}        % For nice text-wrapping figures (use at own discretion)
+\usepackage{amsmath, amssymb} % For better math
+
+\usepackage{latexsym}
+
+\usepackage{algpseudocode}
+
+\usepackage{pgf-pie}
+\usepackage{pgfplots}
+
+\usepackage[T1]{fontenc}
+\usepackage{minted}
+
+\pgfplotsset{width=9cm,compat=1.8}
+
+\usetikzlibrary{backgrounds,calc,shadings,shapes.arrows,shapes.symbols,shadows}
+\definecolor{switch}{HTML}{006996}
+
+\makeatletter
+\pgfkeys{/pgf/.cd,
+  parallelepiped offset x/.initial=2mm,
+  parallelepiped offset y/.initial=2mm
+}
+\pgfdeclareshape{parallelepiped}
+{
+  \inheritsavedanchors[from=rectangle] % this is nearly a rectangle
+  \inheritanchorborder[from=rectangle]
+  \inheritanchor[from=rectangle]{north}
+  \inheritanchor[from=rectangle]{north west}
+  \inheritanchor[from=rectangle]{north east}
+  \inheritanchor[from=rectangle]{center}
+  \inheritanchor[from=rectangle]{west}
+  \inheritanchor[from=rectangle]{east}
+  \inheritanchor[from=rectangle]{mid}
+  \inheritanchor[from=rectangle]{mid west}
+  \inheritanchor[from=rectangle]{mid east}
+  \inheritanchor[from=rectangle]{base}
+  \inheritanchor[from=rectangle]{base west}
+  \inheritanchor[from=rectangle]{base east}
+  \inheritanchor[from=rectangle]{south}
+  \inheritanchor[from=rectangle]{south west}
+  \inheritanchor[from=rectangle]{south east}
+  \backgroundpath{
+    % store lower right in xa/ya and upper right in xb/yb
+    \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    \pgfmathsetlength\pgfutil@tempdima{\pgfkeysvalueof{/pgf/parallelepiped
+      offset x}}
+    \pgfmathsetlength\pgfutil@tempdimb{\pgfkeysvalueof{/pgf/parallelepiped
+      offset y}}
+    \def\ppd@offset{\pgfpoint{\pgfutil@tempdima}{\pgfutil@tempdimb}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xa}{\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathclose
+    \pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@ya}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@ya}}{\ppd@offset}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@yb}}{\ppd@offset}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xa}{\pgf@yb}}{\ppd@offset}}
+    \pgfpathlineto{\pgfqpoint{\pgf@xa}{\pgf@yb}}
+    \pgfpathmoveto{\pgfqpoint{\pgf@xb}{\pgf@yb}}
+    \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xb}{\pgf@yb}}{\ppd@offset}}
+  }
+}
+\makeatother
+
+\tikzset{ports/.style={
+    line width=0.3pt,
+    top color=gray!20,
+    bottom color=gray!80
+  },
+  rack switch/.style={
+    parallelepiped,fill=white, draw,
+    minimum width=1.25cm,
+    minimum height=0.25cm,
+    parallelepiped offset x=2mm,
+    parallelepiped offset y=1.25mm,
+    xscale=-1,
+    path picture={
+      \draw[top color=gray!5,bottom color=gray!40]
+      (path picture bounding box.south west) rectangle
+      (path picture bounding box.north east);
+      \coordinate (A-west) at ([xshift=-0.2cm]path picture bounding box.west);
+      \coordinate (A-center) at ($(path picture bounding box.center)!0!(path
+        picture bounding box.south)$);
+      \foreach \x in {0.275,0.525,0.775}{
+        \draw[ports]([yshift=-0.05cm]$(A-west)!\x!(A-center)$)
+          rectangle +(0.1,0.05);
+        \draw[ports]([yshift=-0.125cm]$(A-west)!\x!(A-center)$)
+          rectangle +(0.1,0.05);
+       }
+      \coordinate (A-east) at (path picture bounding box.east);
+      \foreach \x in {0.085,0.21,0.335,0.455,0.635,0.755,0.875,1}{
+        \draw[ports]([yshift=-0.1125cm]$(A-east)!\x!(A-center)$)
+          rectangle +(0.05,0.1);
+      }
+    }
+  },
+  server/.style={
+    parallelepiped,
+    fill=white, draw,
+    minimum width=0.35cm,
+    minimum height=0.75cm,
+    parallelepiped offset x=3mm,
+    parallelepiped offset y=2mm,
+    xscale=-1,
+    path picture={
+      \draw[top color=gray!5,bottom color=gray!40]
+      (path picture bounding box.south west) rectangle
+      (path picture bounding box.north east);
+      \coordinate (A-center) at ($(path picture bounding box.center)!0!(path
+        picture bounding box.south)$);
+      \coordinate (A-west) at ([xshift=-0.575cm]path picture bounding box.west);
+      \draw[ports]([yshift=0.1cm]$(A-west)!0!(A-center)$)
+        rectangle +(0.2,0.065);
+      \draw[ports]([yshift=0.01cm]$(A-west)!0.085!(A-center)$)
+        rectangle +(0.15,0.05);
+      \fill[black]([yshift=-0.35cm]$(A-west)!-0.1!(A-center)$)
+        rectangle +(0.235,0.0175);
+      \fill[black]([yshift=-0.385cm]$(A-west)!-0.1!(A-center)$)
+        rectangle +(0.235,0.0175);
+      \fill[black]([yshift=-0.42cm]$(A-west)!-0.1!(A-center)$)
+        rectangle +(0.235,0.0175);
+    }
+  },
+}
+
+\usetikzlibrary{calc, shadings, shadows, shapes.arrows}
+
+% Styles for interfaces and edge labels
+\tikzset{%
+  interface/.style={draw, rectangle, rounded corners, font=\LARGE\sffamily},
+  ethernet/.style={interface, fill=yellow!50},% ethernet interface
+  serial/.style={interface, fill=green!70},% serial interface
+  speed/.style={sloped, anchor=south, font=\large\sffamily},% line speed at edge
+  route/.style={draw, shape=single arrow, single arrow head extend=4mm,
+    minimum height=1.7cm, minimum width=3mm, white, fill=switch!20,
+    drop shadow={opacity=.8, fill=switch}, font=\tiny}% inroute/outroute arrows
+}
+\newcommand*{\shift}{1.3cm}% For placing the arrows later
+
+% The router icon
+\newcommand*{\router}[1]{
+\begin{tikzpicture}
+  \coordinate (ll) at (-3,0.5);
+  \coordinate (lr) at (3,0.5);
+  \coordinate (ul) at (-3,2);
+  \coordinate (ur) at (3,2);
+  \shade [shading angle=90, left color=switch, right color=white] (ll)
+    arc (-180:-60:3cm and .75cm) -- +(0,1.5) arc (-60:-180:3cm and .75cm)
+    -- cycle;
+  \shade [shading angle=270, right color=switch, left color=white!50] (lr)
+    arc (0:-60:3cm and .75cm) -- +(0,1.5) arc (-60:0:3cm and .75cm) -- cycle;
+  \draw [thick] (ll) arc (-180:0:3cm and .75cm)
+    -- (ur) arc (0:-180:3cm and .75cm) -- cycle;
+  \draw [thick, shade, upper left=switch, lower left=switch,
+    upper right=switch, lower right=white] (ul)
+    arc (-180:180:3cm and .75cm);
+  \node at (0,0.5){\color{blue!60!black}\Huge #1};% The name of the router
+  % The four arrows, symbols for incoming and outgoing routes:
+  \begin{scope}[yshift=2cm, yscale=0.28, transform shape]
+    \node[route, rotate=45, xshift=\shift] {\strut};
+    \node[route, rotate=-45, xshift=-\shift] {\strut};
+    \node[route, rotate=-135, xshift=\shift] {\strut};
+    \node[route, rotate=135, xshift=-\shift] {\strut};
+  \end{scope}
+\end{tikzpicture}}
+
+\makeatletter
+\pgfdeclareradialshading[tikz@ball]{cloud}{\pgfpoint{-0.275cm}{0.4cm}}{%
+  color(0cm)=(tikz@ball!75!white);
+  color(0.1cm)=(tikz@ball!85!white);
+  color(0.2cm)=(tikz@ball!95!white);
+  color(0.7cm)=(tikz@ball!89!black);
+  color(1cm)=(tikz@ball!75!black)
+}
+\tikzoption{cloud color}{\pgfutil@colorlet{tikz@ball}{#1}%
+  \def\tikz@shading{cloud}\tikz@addmode{\tikz@mode@shadetrue}}
+\makeatother
+
+\tikzset{my cloud/.style={
+     cloud, draw, aspect=2,
+     cloud color={gray!5!white}
+  }
+}
+
+
+\singlespacing               %line spacing options; normally use single
+
+\fussy
+%\sloppy                      % sloppy and fussy commands can be used to avoid overlong text lines
+% if you want to see which lines are too long or have too little stuff, comment out the following lines
+% \overfullrule=1mm
+% to see more info in the detailed log about under/overfull boxes...
+% \showboxbreadth=50 
+% \showboxdepth=50
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% STEP 2:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Set up personal information for the title page and the abstract form.
+%% Replace parameters with your information.
+\title{Automated Software Configuration for Cloud Deployment}
+
+% TM: Contributors to template editors now listed in the beginning of the file in comments
+\author{Antero Vainio}
+\date{\today}
+
+
+
+% Set supervisors and examiners, use the titles according to the thesis language
+% Prof. 
+% Dr. or in Finnish toht. or tri or FT, TkT, Ph.D. or in Swedish... 
+\supervisors{Lirim Osmani, Ashwin Rao, Kalle Happonen}
+\examiners{Prof. Sasu Tarkoma}
+
+
+\keywords{Networking, Virtualization, Distributed Systems}
+\additionalinformation{Cloud Computing, IaaS, Software Automation, System
+Administration, DevOps, IaC}
+
+%% For seminar papers and such, cover page and abstract
+%% requires these three basic items of information.
+%% Label as needed and remove comment marks.
+%%\level{Seminaariraportti}
+%%\programme{Tietojenkäsittelytieteen andidaattiohjelma}
+%%\subject{Seminaarisarjan nimi}
+
+%% Replace classification terms with the ones that match your work. ACM
+%% ACM Digital library provides a taxonomy and a tool for classification
+%% in computer science. Use 1-3 paths, and use right arrows between the
+%% about three levels in the path; each path requires a new line.
+
+\classification{\protect{\ \\
+\  Networks $\rightarrow$ Network services  $\rightarrow$ Cloud computing\  \\
+\  Software and its engineering  $\rightarrow$ Software creation and management  $\rightarrow$ Software post-development issues $\rightarrow$ System administration
+}}
+
+%% if you want to quote someone special. You can comment this line out and there will be nothing on the document.
+%\quoting{Bachelor's degrees make pretty good placemats if you get them laminated.}{Jeph Jacques}
+
+
+%% OPTIONAL STEP: Set up properties and metadata for the pdf file that pdfLaTeX makes.
+%% Your name, work title, and keywords are recommended.
+\hypersetup{
+    unicode=true,           % to show non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={},            % title
+    pdfauthor={},           % author
+    pdfsubject={},          % subject of the document
+    pdfcreator={},          % creator of the document
+    pdfproducer={pdfLaTeX}, % producer of the document
+    pdfkeywords={something} {something else}, % list of keywords for
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=black,        % color of internal links
+    citecolor=black,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan           % color of external links
+}
+
+%%-----------------------------------------------------------------------------------
+
+\begin{document}
+
+% Generate title page.
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% STEP 3:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Write your abstract to be positioned here.
+%% You can make several abstract pages (if you want it in different languages),
+%% but you should also then redefine some of the above parameters in the proper
+%% language as well, in between the abstract definitions.
+
+\begin{abstract}
+
+Nowadays the Internet is being used as a platform for providing a wide variety
+of different services. That has created challenges related to scaling IT
+infrastructure management. Cloud computing is a popular solution for scaling
+infrastructure, either by building a self-hosted cloud or by using cloud
+platform provided by external organizations. This way some the challenges
+related to large scale can be transferred to the cloud administrators.
+
+OpenStack is a group of open-source software projects for running cloud
+platforms. It is currently the most commonly used software for building private
+clouds. Since initially published by NASA and Rackspace, it has been used by
+various organizations such as Walmart, China Mobile and Cern nuclear research
+institute. The largest production deployments of OpenStack clouds consist of
+thousands of physical server computers located in multiple datacenters.
+
+The OpenStack community has created many deployment methods that take advantage
+of automated software configuration management. The deployment methods are
+built with state of the art software for automating different administrative
+tasks. They take different approaches to automating infrastructure management
+for OpenStack.
+
+This thesis compares some of the automated deployment methods for OpenStack and
+examines the benefits of using automation for configuration management. We
+present comparisons based on technical documentations as well as reference
+literature. Additionally, we conducted a questionnaire for OpenStack
+administrators about the use of automation. Lastly, we tested one of the
+deployment methods in a virtualized environment.
+
+\end{abstract}
+
+% Place ToC
+\newpage
+\mytableofcontents
+\mainmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% STEP 4: Write the thesis.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Your actual text starts here. You shouldn't mess with the code above the line except
+%% to change the parameters. Removing the abstract and ToC commands will mess up stuff.
+%%
+%% You may wish to include material to avoid browsing the definitions
+%% above. Command \include{file} includes the file of name file.tex.
+%% As a side effect, subsequent inclusions may force a page break.
+
+% BSc instructions
+%\include{bsc_finnish_contents}
+%\include{bsc_english_contents}
+% MSc instructions
+%\include{msc_finnish_contents}
+\include{msc_english_contents}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage                          %fixes the position of bibliography in bookmarks
+\phantomsection
+\addcontentsline{toc}{chapter}{\bibname}  % This lines adds the bibliography to the ToC
+\printbibliography
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\backmatter
+\begin{appendices}
+
+\input{appendix_heat-templates}
+\input{appendix_ansible-setup}
+
+\end{appendices}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

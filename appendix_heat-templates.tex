@@ -1,0 +1,397 @@
+\appendix{Heat templates used for test environment setup} \label{heat-templates}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+heat_template_version: 2016-10-14
+description: |
+    Heat stack for OpenStack-Ansible deployment test setup.
+parameters:
+    public_network:
+        type: string
+    mgmt_cidr:
+        type: string
+    mgmt_gateway_ip:
+        type: string
+    dns_nameservers:
+        type: comma_delimited_list
+    tunnel_cidr:
+        type: string
+    tunnel_gateway_ip:
+        type: string
+    storage_cidr:
+        type: string
+    storage_gateway_ip:
+        type: string
+    timezone:
+        type: string
+    deploy_flavor:
+        type: string
+    target_flavor:
+        type: string
+    deploy_image:
+        type: string
+    target_image:
+        type: string
+    deployment_private_key:
+        type: string
+    deployment_public_key:
+        type: string
+    deployment_authorized_key:
+        type: string
+    floatingip:
+        type: string
+resources:
+    mgmt_network:
+        type: ./common-heat-templates/network/access-net.yaml
+        properties:
+            public_net: { get_param: public_network }
+            cidr: { get_param: mgmt_cidr }
+            gateway_ip: { get_param: mgmt_gateway_ip }
+            dns_nameservers: { get_param: dns_nameservers }
+    tunnel_network:
+        type: ./common-heat-templates/network/secondary-net.yaml
+        properties:
+            cidr: { get_param: tunnel_cidr }
+            gateway_ip: { get_param: tunnel_gateway_ip }
+    storage_network:
+        type: ./common-heat-templates/network/secondary-net.yaml
+        properties:
+            cidr: { get_param: storage_cidr }
+            gateway_ip: { get_param: storage_gateway_ip }
+    base_config:
+        type: OS::Heat::CloudConfig
+        properties:
+            cloud_config:
+                final_message: |
+                    Server configured successfully!
+                timezone: { get_param: timezone }
+                package_update: true
+                package_upgrade: true
+                packages:
+                  - bridge-utils
+                  - ifupdown
+                power_state:
+                    mode: reboot
+                    message: Rebooting
+                    timeout: 30
+                    condition: True
+    target_packages_config:
+        type: OS::Heat::CloudConfig
+        properties:
+            cloud_config:
+                packages:
+                  - bridge-utils
+                  - debootstrap
+                  - ifenslave
+                  - ifenslave-2.6
+                  - lsof
+                  - lvm2
+                  - chrony
+                  - openssh-server
+                  - sudo
+                  - tcpdump
+                  - vlan
+                  - python
+                  - ifupdown
+    disable_netplan:
+        type: OS::Heat::SoftwareConfig
+        properties:
+            config: |
+                #!/bin/sh
+                sudo systemctl stop systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+                sudo systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+                sudo systemctl mask systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+                sudo apt-get --assume-yes purge nplan netplan.io
+    deploy_inject_root_private_key:
+        type: ./common-heat-templates/config/inject-root-private-key.yaml
+        properties:
+            private_key: { get_param: deployment_private_key }
+    deploy_inject_root_authorized_key:
+        type: ./common-heat-templates/config/inject-root-authorized-key.yaml
+        properties:
+            authorized_key: { get_param: deployment_authorized_key }
+    target_inject_root_authorized_key:
+        type: ./common-heat-templates/config/inject-root-authorized-key.yaml
+        properties:
+            authorized_key: { get_param: deployment_public_key }
+    mgmt_port_deploy:
+        type: OS::Neutron::Port
+        properties:
+            network: { get_attr: [ mgmt_network, private_net ] }
+            fixed_ips:
+              - subnet: { get_attr: [ mgmt_network, private_subnet ] }
+                ip_address: 172.29.236.50
+    floating_ip_association:
+        type: OS::Neutron::FloatingIPAssociation
+        properties:
+            floatingip_id: { get_param: floatingip }
+            port_id: { get_resource: mgmt_port_deploy }
+    add_interfaces_deploy:
+        type: OS::Heat::CloudConfig
+        properties:
+            cloud_config:
+                final_message: |
+                    Added interface files successfully!
+                write_files:
+                  - path: /etc/network/interfaces
+                    owner: root:root
+                    permissions: '0644'
+                    content: |
+                        auto lo
+                        iface lo inet loopback
+
+                        auto ens3
+                        iface ens3 inet manual
+
+                        source /etc/network/interfaces.d/*.cfg
+                  - path: /etc/network/interfaces.d/aio.cfg
+                    owner: root:root
+                    permissions: '0644'
+                    content: |
+                        auto br-mgmt
+                        iface br-mgmt inet dhcp
+                            bridge_stp off
+                            bridge_waitport 0
+                            bridge_fd 0
+                            bridge_ports ens3
+    host_config_deploy:
+        type: OS::Heat::MultipartMime
+        properties:
+            parts:
+              - config: { get_resource: add_interfaces_deploy }
+              - config: { get_resource: base_config }
+              - config: { get_resource: disable_netplan }
+              - config: { get_resource: deploy_inject_root_private_key }
+              - config: { get_resource: deploy_inject_root_authorized_key }
+    osa_host_deploy:
+        type: OS::Nova::Server
+        properties:
+            flavor: { get_param: deploy_flavor }
+            image: { get_param: deploy_image }
+            networks:
+              - port: { get_resource: mgmt_port_deploy }
+            user_data_format: RAW
+            user_data: { get_resource: host_config_deploy }
+    mgmt_port_target:
+        type: OS::Neutron::Port
+        properties:
+            network: { get_attr: [ mgmt_network, private_net ] }
+            fixed_ips:
+              - subnet: { get_attr: [ mgmt_network, private_subnet ] }
+                ip_address: 172.29.236.100
+    tunnel_port_target:
+        type: OS::Neutron::Port
+        properties:
+            network: { get_attr: [ tunnel_network, private_net ] }
+            fixed_ips:
+              - subnet: { get_attr: [ tunnel_network, private_subnet ] }
+                ip_address: 172.29.240.100
+    storage_port_target:
+        type: OS::Neutron::Port
+        properties:
+            network: { get_attr: [ storage_network, private_net ] }
+            fixed_ips:
+              - subnet: { get_attr: [ storage_network, private_subnet ] }
+                ip_address: 172.29.244.100
+    add_interfaces_target:
+        type: OS::Heat::CloudConfig
+        properties:
+            cloud_config:
+                final_message: |
+                    Added interface files successfully!
+                write_files:
+                  - path: /etc/network/interfaces
+                    owner: root:root
+                    permissions: '0644'
+                    content: |
+                        auto lo
+                        iface lo inet loopback
+
+                        source /etc/network/interfaces.d/*.cfg
+                  - path: /etc/network/interfaces.d/aio.cfg
+                    owner: root:root
+                    permissions: '0644'
+                    content: |
+                        auto ens3
+                        iface ens3 inet manual
+
+                        auto ens4
+                        iface ens4 inet manual
+
+                        auto ens5
+                        iface ens5 inet manual
+
+                        auto br-mgmt
+                        iface br-mgmt inet static
+                            address 172.29.236.100
+                            netmask 255.255.252.0
+                            gateway 172.29.236.1
+                            dns-nameservers 193.166.4.24
+                            bridge_ports ens3
+                            bridge_stp off
+                            bridge_waitport 0
+                            bridge_fd 0
+
+                        auto br-vxlan
+                        iface br-vxlan inet static
+                            address 172.29.240.100
+                            netmask 255.255.252.0
+                            bridge_ports ens4
+                            bridge_stp off
+                            bridge_waitport 0
+                            bridge_fd 0
+
+                        auto br-storage
+                        iface br-storage inet static
+                            address 172.29.244.100
+                            netmask 255.255.252.0
+                            bridge_ports ens5
+                            bridge_stp off
+                            bridge_waitport 0
+                            bridge_fd 0
+    host_config_target:
+        type: OS::Heat::MultipartMime
+        properties:
+            parts:
+              - config: { get_resource: add_interfaces_target }
+              - config: { get_resource: base_config }
+              - config: { get_resource: target_packages_config }
+              - config: { get_resource: disable_netplan }
+              - config: { get_resource: target_inject_root_authorized_key }
+    osa_host_target:
+        type: OS::Nova::Server
+        properties:
+            flavor: { get_param: target_flavor }
+            image: { get_param: target_image }
+            networks:
+              - port: { get_resource: mgmt_port_target }
+              - port: { get_resource: tunnel_port_target }
+              - port: { get_resource: storage_port_target }
+            user_data_format: RAW
+            user_data: { get_resource: host_config_target }
+\end{minted}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+# ./common-heat-templates/network/access-net.yaml
+heat_template_version: 2016-10-14
+description: |
+    Heat stack for common network that is routed to external 'public' network.
+parameters:
+    public_net:
+        type: string
+    cidr:
+        type: string
+        default: 172.29.236.0/22
+    gateway_ip:
+        type: string
+        default: 172.29.236.1
+    dns_nameservers:
+        type: comma_delimited_list
+        default: 8.8.8.8
+resources:
+    private_net:
+        type: OS::Neutron::Net
+    private_subnet:
+        type: OS::Neutron::Subnet
+        properties:
+            cidr: { get_param: cidr }
+            gateway_ip: { get_param: gateway_ip }
+            dns_nameservers: { get_param: dns_nameservers }
+            network: { get_resource: private_net }
+    router:
+        type: OS::Neutron::Router
+        properties:
+            external_gateway_info:
+                network: { get_param: public_net }
+    router_interface:
+        type: OS::Neutron::RouterInterface
+        properties:
+            router_id: { get_resource: router }
+            subnet_id: { get_resource: private_subnet }
+outputs:
+    private_net:
+        value: { get_attr: [ private_net, name ] }
+    private_subnet:
+        value: { get_attr: [ private_subnet, name ] }
+\end{minted}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+# ./common-heat-templates/network/secondary-net.yaml
+heat_template_version: 2016-10-14
+description: |
+    Heat stack for non-primary network, meaning that it will not be used as the
+    default gateway.
+parameters:
+    cidr:
+        type: string
+        default: 172.29.240.0/22
+    gateway_ip:
+        type: string
+        default: 172.29.240.1
+resources:
+    private_net:
+        type: OS::Neutron::Net
+    private_subnet:
+        type: OS::Neutron::Subnet
+        properties:
+            cidr: { get_param: cidr }
+            gateway_ip: { get_param: gateway_ip }
+            host_routes:
+              - destination: { get_param: cidr }
+                nexthop: { get_param: gateway_ip }
+            network: { get_resource: private_net }
+outputs:
+    private_net:
+        value: { get_attr: [ private_net, name ] }
+    private_subnet:
+        value: { get_attr: [ private_subnet, name ] }
+\end{minted}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+# ./common-heat-templates/config/inject-root-private-key.yaml
+heat_template_version: 2016-10-14
+description: |
+    Heat stack for injecting given private key for root user.
+parameters:
+    private_key:
+        type: string
+resources:
+    config:
+        type: OS::Heat::SoftwareConfig
+        properties:
+            config:
+                str_replace:
+                    template: |
+                        #!/bin/sh
+                        echo "$private_key" | su - root -c 'tee -a .ssh/id_rsa'
+                        su - root -c 'chmod 600 .ssh/id_rsa'
+                    params:
+                        $private_key: { get_param: private_key }
+outputs:
+    OS::stack_id:
+        value: { get_resource: config }
+\end{minted}
+
+\begin{minted}[fontsize=\small, frame=none, linenos, breaklines]{yaml}
+# ./common-heat-templates/config/inject-root-authorized-key.yaml
+heat_template_version: 2016-10-14
+description: |
+    Heat stack for injecting given public key as authorized key for root user.
+parameters:
+    authorized_key:
+        type: string
+resources:
+    config:
+        type: OS::Heat::SoftwareConfig
+        properties:
+            config:
+                str_replace:
+                    template: |
+                        #!/bin/sh
+                        echo "$authorized_key" | su - root -c 'tee .ssh/authorized_keys'
+                        su - root -c 'chmod 600 .ssh/authorized_keys'
+                    params:
+                        $authorized_key: { get_param: authorized_key }
+outputs:
+    OS::stack_id:
+        value: { get_resource: config }
+\end{minted}

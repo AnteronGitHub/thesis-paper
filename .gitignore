@@ -1,0 +1,16 @@
+
+.DS_Store
+*.pdf
+*.aux
+*.log
+*.out
+*.toc
+
+*.swp
+
+*.bbl
+*.bcf
+*.run.xml
+*.blg
+
+_minted*
