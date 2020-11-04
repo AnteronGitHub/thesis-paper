@@ -631,12 +631,12 @@
      \par
     }
     
-    \par
-    {\bf\examinerlabel}\par
-    {\leftskip=2em
-     \@examiners
-     \par
-    }
+%   \par
+%   {\bf\examinerlabel}\par
+%   {\leftskip=2em
+%    \@examiners
+%    \par
+%   }
 }
 \fi
 
